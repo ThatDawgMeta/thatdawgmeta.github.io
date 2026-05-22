@@ -301,6 +301,294 @@
     header, .filter-section, .stats, .table-wrap { padding-left: 16px; padding-right: 16px; }
     input[type="search"] { width: 180px; }
   }
+
+  /* ── Compare button on each row ── */
+  .cmp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 5px;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 8px;
+    vertical-align: middle;
+    transition: all .15s;
+    flex-shrink: 0;
+  }
+  .cmp-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(118,196,66,.08); }
+  .cmp-btn.selected { border-color: var(--accent); color: var(--bg); background: var(--accent); }
+  .cmp-btn.disabled { opacity: .25; cursor: not-allowed; }
+  .cmp-btn.disabled:hover { border-color: var(--border2); color: var(--muted); background: transparent; }
+
+  /* ── Comparison tray ── */
+  #cmp-tray {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(10,12,18,.95);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border2);
+    padding: 12px 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 100;
+    transform: translateY(100%);
+    transition: transform .25s cubic-bezier(.4,0,.2,1);
+    flex-wrap: wrap;
+  }
+  #cmp-tray.visible { transform: translateY(0); }
+
+  .tray-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .tray-slots { display: flex; gap: 8px; flex: 1; flex-wrap: wrap; }
+
+  .tray-slot {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+  }
+  .tray-slot .tray-remove {
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    transition: color .1s;
+  }
+  .tray-slot .tray-remove:hover { color: #f87171; }
+
+  .tray-slot-empty {
+    border: 1px dashed var(--border2);
+    border-radius: 6px;
+    padding: 6px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .tray-actions { display: flex; gap: 8px; margin-left: auto; }
+
+  .tray-btn {
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 16px;
+    transition: all .15s;
+    white-space: nowrap;
+    border: none;
+  }
+  .tray-btn-compare {
+    background: var(--accent);
+    color: #0a0c12;
+  }
+  .tray-btn-compare:hover { background: var(--accent2); }
+  .tray-btn-compare:disabled { opacity: .4; cursor: not-allowed; }
+  .tray-btn-clear {
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--muted);
+  }
+  .tray-btn-clear:hover { border-color: var(--dim); color: var(--text); }
+
+  /* ── Comparison modal ── */
+  #cmp-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s;
+  }
+  #cmp-modal.visible { opacity: 1; pointer-events: all; }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 32px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .modal-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: .04em;
+  }
+  .modal-title span { color: var(--muted); font-weight: 400; }
+
+  .modal-close {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    transition: all .15s;
+  }
+  .modal-close:hover { border-color: var(--dim); color: var(--text); }
+
+  .modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 32px 48px;
+  }
+
+  /* side-by-side columns */
+  .cmp-grid {
+    display: grid;
+    gap: 0;
+    margin-top: 0;
+  }
+  .cmp-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+  .cmp-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+
+  .cmp-col {
+    border-right: 1px solid var(--border);
+    min-width: 0;
+  }
+  .cmp-col:last-child { border-right: none; }
+
+  /* sticky column header */
+  .cmp-col-header {
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    border-bottom: 2px solid var(--border2);
+    padding: 20px 20px 16px;
+    z-index: 10;
+  }
+
+  .cmp-gpu-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .cmp-gpu-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  /* spec rows */
+  .cmp-specs {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .cmp-spec-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .cmp-spec-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .cmp-spec-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: right;
+  }
+
+  /* highlight best value */
+  .cmp-best { color: var(--accent2); }
+  .cmp-worst { color: #f87171; opacity: .75; }
+
+  /* model list section */
+  .cmp-models-header {
+    padding: 14px 20px 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cmp-model-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 20px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .cmp-model-row:last-child { border-bottom: none; }
+  .cmp-model-row.offload-row { background: rgba(245,158,11,.04); }
+  .cmp-model-row.unavail-row { opacity: .35; }
+
+  .cmp-model-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .cmp-model-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+  .status-fits   { color: var(--accent2); }
+  .status-offload{ color: #f59e0b; }
+  .status-no     { color: var(--muted); }
 </style>
 </head>
 <body>
@@ -384,6 +672,25 @@
     <tbody id="tbody"></tbody>
   </table>
   <div class="empty" id="empty"><span class="emoji">🔍</span>No GPUs match your search.</div>
+</div>
+
+<!-- ── Comparison tray ── -->
+<div id="cmp-tray">
+  <span class="tray-label">Compare</span>
+  <div class="tray-slots" id="tray-slots"></div>
+  <div class="tray-actions">
+    <button class="tray-btn tray-btn-clear" id="tray-clear">Clear</button>
+    <button class="tray-btn tray-btn-compare" id="tray-compare" disabled>Compare →</button>
+  </div>
+</div>
+
+<!-- ── Comparison modal ── -->
+<div id="cmp-modal">
+  <div class="modal-header">
+    <div class="modal-title">GPU Comparison <span id="modal-subtitle"></span></div>
+    <button class="modal-close" id="modal-close">✕ Close</button>
+  </div>
+  <div class="modal-body" id="modal-body"></div>
 </div>
 
 <script>
@@ -677,7 +984,11 @@ function renderRows(data) {
     tr.dataset.arch = aSlug;
     tr.dataset.name = g.name.toLowerCase();
     tr.innerHTML = `
-      <td><span class="gpu-name">${g.name}</span><span class="chevron">▶</span></td>
+      <td>
+        <span class="gpu-name">${g.name}</span>
+        <span class="chevron">▶</span>
+        <button class="cmp-btn" title="Add to comparison" onclick="toggleCompare(event, '${g.name}')">+</button>
+      </td>
       <td><span class="mfr-dot mfr-${g.mfr}"></span><span style="font-size:12px;color:var(--dim);font-family:'JetBrains Mono',monospace">${g.mfr === "nvidia" ? "NVIDIA" : "Intel"}</span></td>
       <td><span class="cat-badge cat-${catKey}">${CAT_LABEL[catKey] || g.cat}</span></td>
       <td><span class="badge b-${aSlug}">${g.arch}</span></td>
@@ -821,6 +1132,194 @@ document.querySelectorAll("thead th[data-col]").forEach(th => {
     renderRows(currentData);
     applyFilters();
   });
+});
+
+// ── Comparison state ─────────────────────────────────────────────────────────
+const MAX_COMPARE = 3;
+let compareList = []; // array of GPU objects
+
+function toggleCompare(e, gpuName) {
+  e.stopPropagation(); // don't expand the detail row
+  const gpu = GPUS.find(g => g.name === gpuName);
+  if (!gpu) return;
+
+  const idx = compareList.findIndex(g => g.name === gpuName);
+  if (idx >= 0) {
+    compareList.splice(idx, 1);
+  } else {
+    if (compareList.length >= MAX_COMPARE) return;
+    compareList.push(gpu);
+  }
+  syncCmpButtons();
+  renderTray();
+}
+
+function syncCmpButtons() {
+  document.querySelectorAll(".cmp-btn").forEach(btn => {
+    const name = btn.getAttribute("onclick").match(/'([^']+)'\)/)?.[1];
+    if (!name) return;
+    const selected = compareList.some(g => g.name === name);
+    const full = !selected && compareList.length >= MAX_COMPARE;
+    btn.classList.toggle("selected", selected);
+    btn.classList.toggle("disabled", full);
+    btn.textContent = selected ? "✓" : "+";
+    btn.title = selected ? "Remove from comparison" : full ? "Max 3 GPUs selected" : "Add to comparison";
+  });
+}
+
+function renderTray() {
+  const tray      = document.getElementById("cmp-tray");
+  const slots     = document.getElementById("tray-slots");
+  const compareBtn= document.getElementById("tray-compare");
+
+  slots.innerHTML = "";
+
+  compareList.forEach(g => {
+    const slot = document.createElement("div");
+    slot.className = "tray-slot";
+    slot.innerHTML = `
+      <span class="mfr-dot mfr-${g.mfr}" style="flex-shrink:0"></span>
+      <span>${g.name}</span>
+      <span class="tray-remove" onclick="toggleCompare(event,'${g.name}')" title="Remove">×</span>
+    `;
+    slots.appendChild(slot);
+  });
+
+  // empty slots
+  for (let i = compareList.length; i < MAX_COMPARE; i++) {
+    const empty = document.createElement("div");
+    empty.className = "tray-slot-empty";
+    empty.textContent = `Slot ${i + 1}`;
+    slots.appendChild(empty);
+  }
+
+  compareBtn.disabled = compareList.length < 2;
+  tray.classList.toggle("visible", compareList.length > 0);
+}
+
+// ── Build comparison modal ────────────────────────────────────────────────────
+function openCompareModal() {
+  const modal    = document.getElementById("cmp-modal");
+  const body     = document.getElementById("modal-body");
+  const subtitle = document.getElementById("modal-subtitle");
+
+  subtitle.textContent = `— ${compareList.map(g => g.name).join(" vs ")}`;
+
+  const cols = compareList.length;
+
+  // Determine best/worst for numeric fields
+  const vrams  = compareList.map(g => g.vram);
+  const speeds = compareList.map(g => g.speedRank);
+  const fitOrder = {great:0, good:1, ok:2, low:3};
+  const fits   = compareList.map(g => fitOrder[g.fit]);
+
+  const maxVram  = Math.max(...vrams);
+  const minVram  = Math.min(...vrams);
+  const minSpeed = Math.min(...speeds); // lower = faster = better
+  const maxSpeed = Math.max(...speeds);
+  const minFit   = Math.min(...fits);   // lower = better fit
+  const maxFit   = Math.max(...fits);
+
+  // Build all model rows — union of models relevant to any selected GPU
+  const relevantModels = LLM_MODELS.filter(m => {
+    // show if at least one GPU can run it (fits or offloads)
+    return compareList.some(g => m.vram <= g.vram || (m.vram > g.vram && m.systemRam > 0 && (m.vram - g.vram) <= 64));
+  });
+
+  function modelStatus(gpu, m) {
+    if (m.vram <= gpu.vram && m.systemRam === 0)
+      return `<span class="cmp-model-status status-fits">✓ Fits</span>`;
+    if (m.vram > gpu.vram && m.systemRam > 0 && (m.vram - gpu.vram) <= 64)
+      return `<span class="cmp-model-status status-offload">⚡ RAM+</span>`;
+    return `<span class="cmp-model-status status-no">✗</span>`;
+  }
+
+  function specClass(val, best, worst, higherIsBetter) {
+    if (cols === 1) return "";
+    if (higherIsBetter) return val === best ? "cmp-best" : val === worst && best !== worst ? "cmp-worst" : "";
+    else return val === best ? "cmp-best" : val === worst && best !== worst ? "cmp-worst" : "";
+  }
+
+  // Column HTML
+  const colsHtml = compareList.map(g => {
+    const vramClass  = specClass(g.vram, maxVram, minVram, true);
+    const speedClass = specClass(g.speedRank, minSpeed, maxSpeed, false); // lower speedRank = faster = better
+    const fitClass   = specClass(fitOrder[g.fit], minFit, maxFit, false);
+
+    const modelRows = relevantModels.map(m => {
+      const fits     = m.vram <= g.vram && m.systemRam === 0;
+      const offloads = m.vram > g.vram && m.systemRam > 0 && (m.vram - g.vram) <= 64;
+      const rowClass = offloads ? "offload-row" : !fits && !offloads ? "unavail-row" : "";
+      return `<div class="cmp-model-row ${rowClass}">
+        <span class="cmp-model-name">${m.name}${m.recommended ? ' <span style="color:var(--accent);font-size:10px">★</span>' : ""}</span>
+        ${modelStatus(g, m)}
+      </div>`;
+    }).join("");
+
+    return `<div class="cmp-col">
+      <div class="cmp-col-header">
+        <div class="cmp-gpu-name">
+          <span class="mfr-dot mfr-${g.mfr}" style="margin-right:8px"></span>${g.name}
+        </div>
+        <div class="cmp-gpu-meta">
+          <span>${g.mfr === "nvidia" ? "NVIDIA" : "Intel"}</span>
+          <span>·</span>
+          <span>${g.arch}</span>
+          <span>·</span>
+          <span>${g.cat === "geforce" ? "GeForce" : g.cat.charAt(0).toUpperCase()+g.cat.slice(1)}</span>
+        </div>
+      </div>
+
+      <div class="cmp-specs">
+        <div class="cmp-spec-row">
+          <span class="cmp-spec-label">VRAM</span>
+          <span class="cmp-spec-value ${vramClass}">${g.vram} GB</span>
+        </div>
+        <div class="cmp-spec-row">
+          <span class="cmp-spec-label">LLM Fit</span>
+          <span class="cmp-spec-value ${fitClass}">${FIT_LABEL[g.fit]}</span>
+        </div>
+        <div class="cmp-spec-row">
+          <span class="cmp-spec-label">Est. Speed</span>
+          <span class="cmp-spec-value ${speedClass}">${speedLabel(g.speedRank)}</span>
+        </div>
+        <div class="cmp-spec-row">
+          <span class="cmp-spec-label">Notes</span>
+          <span style="font-size:11px;color:var(--muted);text-align:right;max-width:160px;white-space:normal;line-height:1.4">${g.note}</span>
+        </div>
+      </div>
+
+      <div class="cmp-models-header">Compatible LLM Models</div>
+      ${modelRows}
+    </div>`;
+  }).join("");
+
+  body.innerHTML = `<div class="cmp-grid cols-${cols}">${colsHtml}</div>
+    <div style="padding:20px 4px 0;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)">
+      ★ Recommended · ⚡ RAM+ = needs system RAM offload · ✗ = insufficient VRAM · 
+      <span style="color:var(--accent2)">Green</span> = best · <span style="color:#f87171">Red</span> = worst
+    </div>`;
+
+  modal.classList.add("visible");
+  document.body.style.overflow = "hidden";
+}
+
+function closeCompareModal() {
+  document.getElementById("cmp-modal").classList.remove("visible");
+  document.body.style.overflow = "";
+}
+
+document.getElementById("tray-compare").addEventListener("click", openCompareModal);
+document.getElementById("modal-close").addEventListener("click", closeCompareModal);
+document.getElementById("tray-clear").addEventListener("click", () => {
+  compareList = [];
+  syncCmpButtons();
+  renderTray();
+});
+
+// close modal on Escape
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeCompareModal();
 });
 
 // ── Init ──────────────────────────────────────────────────────────────────────
