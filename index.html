@@ -8,41 +8,49 @@
   @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
   :root {
-    --bg:      #0d0f14;
-    --surface: #13161e;
-    --border:  #1f2433;
-    --border2: #2a3045;
-    --text:    #e2e8f0;
-    --muted:   #64748b;
+    --bg:      #0a0c12;
+    --surface: #0f1219;
+    --border:  #1a1f2e;
+    --border2: #242d42;
+    --text:    #dde6f5;
+    --muted:   #4a5878;
+    --dim:     #7890b0;
+
+    /* manufacturer accent — changes dynamically via JS */
     --accent:  #76c442;
     --accent2: #4ade80;
-    --warn:    #f59e0b;
-    --dim:     #94a3b8;
-
-    /* generation colours */
-    --c20: #3b82f6;
-    --c30: #8b5cf6;
-    --c40: #f59e0b;
-    --c50: #76c442;
 
     /* category colours */
-    --cgf: #e2e8f0;   /* GeForce */
-    --cws: #22d3ee;   /* Workstation */
-    --cdc: #f43f5e;   /* Datacenter */
+    --cgf: #dde6f5;
+    --cws: #22d3ee;
+    --cdc: #a78fe0;
+
+    /* NVIDIA arch colours */
+    --nv-turing:    #3b82f6;
+    --nv-ampere:    #8b5cf6;
+    --nv-ada:       #f59e0b;
+    --nv-hopper:    #e879f9;
+    --nv-blackwell: #76c442;
+
+    /* Intel arch colours */
+    --in-alchemist:  #3b82f6;
+    --in-battlemage: #0096d6;
+    --in-xehp:       #8b5cf6;
+    --in-gaudi:      #7c5cbf;
+    --in-celestial:  #22d3ee;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.6; min-height: 100vh; }
 
   /* ── Header ── */
-  header { border-bottom: 1px solid var(--border); padding: 28px 32px 20px; display: flex; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+  header { border-bottom: 1px solid var(--border); padding: 24px 32px 20px; display: flex; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
   .header-title { flex: 1; min-width: 200px; }
-  .logo { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: var(--accent); letter-spacing: .15em; text-transform: uppercase; margin-bottom: 6px; }
+  .logo { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: var(--accent); letter-spacing: .15em; text-transform: uppercase; margin-bottom: 6px; transition: color .3s; }
   h1 { font-size: 22px; font-weight: 600; letter-spacing: -.02em; }
   h1 span { color: var(--muted); font-weight: 300; }
 
-  /* ── Controls ── */
-  .controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  /* search */
   .search-wrap { position: relative; }
   .search-wrap svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
   input[type="search"] { background: var(--surface); border: 1px solid var(--border2); border-radius: 6px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 13px; padding: 8px 12px 8px 34px; width: 240px; outline: none; transition: border-color .15s; }
@@ -53,28 +61,41 @@
   /* ── Filter rows ── */
   .filter-section { padding: 12px 32px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; }
   .filter-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-  .filter-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); min-width: 80px; }
+  .filter-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); min-width: 88px; }
 
-  .pill { background: var(--surface); border: 1px solid var(--border2); border-radius: 20px; color: var(--muted); cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: .05em; padding: 4px 12px; transition: all .15s; user-select: none; }
+  /* base pill */
+  .pill { background: var(--surface); border: 1px solid var(--border2); border-radius: 20px; color: var(--muted); cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: .04em; padding: 4px 13px; transition: all .15s; user-select: none; }
   .pill:hover { border-color: var(--dim); color: var(--text); }
-  .pill.active { color: #0d0f14; font-weight: 700; border-color: transparent; }
+  .pill.active { color: #0a0c12; font-weight: 700; border-color: transparent; }
+
+  /* manufacturer pills */
+  .pill[data-mfr="all"].active      { background: var(--dim); }
+  .pill[data-mfr="nvidia"].active   { background: #76c442; }
+  .pill[data-mfr="intel"].active    { background: #0096d6; }
 
   /* category pills */
-  .pill[data-cat="all"].active  { background: var(--dim); }
-  .pill[data-cat="geforce"].active { background: var(--cgf); }
+  .pill[data-cat="all"].active         { background: var(--dim); }
+  .pill[data-cat="consumer"].active    { background: var(--cgf); }
+  .pill[data-cat="geforce"].active     { background: var(--cgf); }
   .pill[data-cat="workstation"].active { background: var(--cws); }
-  .pill[data-cat="datacenter"].active { background: var(--cdc); }
+  .pill[data-cat="datacenter"].active  { background: var(--cdc); }
 
-  /* gen pills */
-  .pill[data-gen="all"].active { background: var(--dim); }
-  .pill[data-gen="turing"].active  { background: var(--c20); }
-  .pill[data-gen="ampere"].active  { background: var(--c30); }
-  .pill[data-gen="ada"].active     { background: var(--c40); }
-  .pill[data-gen="blackwell"].active { background: var(--c50); }
-  .pill[data-gen="hopper"].active  { background: #e879f9; }
+  /* arch pills — NVIDIA */
+  .pill[data-arch="turing"].active    { background: var(--nv-turing); }
+  .pill[data-arch="ampere"].active    { background: var(--nv-ampere); }
+  .pill[data-arch="ada"].active       { background: var(--nv-ada); }
+  .pill[data-arch="hopper"].active    { background: var(--nv-hopper); }
+  .pill[data-arch="blackwell"].active { background: var(--nv-blackwell); }
+  /* arch pills — Intel */
+  .pill[data-arch="alchemist"].active  { background: var(--in-alchemist); }
+  .pill[data-arch="battlemage"].active { background: var(--in-battlemage); }
+  .pill[data-arch="xe-hp"].active      { background: var(--in-xehp); }
+  .pill[data-arch="gaudi"].active      { background: var(--in-gaudi); color: #fff; }
+  .pill[data-arch="celestial"].active  { background: var(--in-celestial); }
+  .pill[data-arch="all"].active        { background: var(--dim); }
 
-  /* ── Stats ── */
-  .stats { padding: 10px 32px; border-bottom: 1px solid var(--border); display: flex; gap: 24px; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); flex-wrap: wrap; }
+  /* ── Stats bar ── */
+  .stats { padding: 10px 32px; border-bottom: 1px solid var(--border); display: flex; gap: 20px; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); flex-wrap: wrap; }
   .stats strong { color: var(--text); }
   .stats .sep { color: var(--border2); }
 
@@ -87,39 +108,56 @@
   thead th .sa { margin-left: 4px; opacity: .4; }
   thead th.sorted .sa { opacity: 1; }
   tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
-  tbody tr:hover { background: rgba(255,255,255,.025); }
+  tbody tr:hover { background: rgba(255,255,255,.02); }
   tbody tr.hidden { display: none; }
   td { padding: 10px 14px; white-space: nowrap; vertical-align: middle; }
 
-  /* ── Cell styles ── */
+  /* ── Cell components ── */
   .gpu-name { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; }
 
   .badge { border-radius: 4px; display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: .04em; padding: 2px 7px; }
-  .b-turing    { background: rgba(59,130,246,.15);  color: var(--c20); }
-  .b-ampere    { background: rgba(139,92,246,.15);  color: var(--c30); }
-  .b-ada       { background: rgba(245,158,11,.15);  color: var(--c40); }
-  .b-blackwell { background: rgba(118,196,66,.15);  color: var(--c50); }
-  .b-hopper    { background: rgba(232,121,249,.15); color: #e879f9; }
+  /* NVIDIA arch badges */
+  .b-turing    { background: rgba(59,130,246,.15);  color: var(--nv-turing); }
+  .b-ampere    { background: rgba(139,92,246,.15);  color: var(--nv-ampere); }
+  .b-ada       { background: rgba(245,158,11,.15);  color: var(--nv-ada); }
+  .b-hopper    { background: rgba(232,121,249,.15); color: var(--nv-hopper); }
+  .b-blackwell { background: rgba(118,196,66,.15);  color: var(--nv-blackwell); }
+  /* Intel arch badges */
+  .b-alchemist  { background: rgba(59,130,246,.15);  color: var(--in-alchemist); }
+  .b-battlemage { background: rgba(0,150,214,.15);   color: var(--in-battlemage); }
+  .b-xe-hp      { background: rgba(139,92,246,.15);  color: var(--in-xehp); }
+  .b-gaudi      { background: rgba(124,92,191,.15);  color: #a78fe0; }
+  .b-celestial  { background: rgba(34,211,238,.15);  color: var(--in-celestial); }
 
+  /* manufacturer dot */
+  .mfr-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+  .mfr-nvidia { background: #76c442; }
+  .mfr-intel  { background: #0096d6; }
+
+  /* category badge */
   .cat-badge { border-radius: 4px; display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; padding: 2px 7px; }
-  .cat-geforce     { background: rgba(226,232,240,.1);  color: var(--cgf); }
-  .cat-workstation { background: rgba(34,211,238,.12);  color: var(--cws); }
-  .cat-datacenter  { background: rgba(244,63,94,.12);   color: var(--cdc); }
+  .cat-consumer    { background: rgba(221,230,245,.08); color: var(--cgf); }
+  .cat-geforce     { background: rgba(221,230,245,.08); color: var(--cgf); }
+  .cat-workstation { background: rgba(34,211,238,.1);   color: var(--cws); }
+  .cat-datacenter  { background: rgba(167,143,224,.12); color: var(--cdc); }
 
   .vram { font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 13px; }
   .vram-bar-wrap { display: flex; align-items: center; gap: 10px; min-width: 130px; }
   .vram-bar { flex: 1; height: 4px; background: var(--border2); border-radius: 2px; overflow: hidden; }
-  .vram-bar-fill { height: 100%; border-radius: 2px; transition: width .3s ease; }
+  .vram-bar-fill { height: 100%; border-radius: 2px; }
 
   .fit { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; }
-  .fit-great { color: var(--accent2); }
-  .fit-good  { color: var(--warn); }
+  .fit-great { color: #4ade80; }
+  .fit-good  { color: #f59e0b; }
   .fit-ok    { color: #fb923c; }
   .fit-low   { color: #f87171; }
 
   .speed { color: var(--dim); font-size: 12px; font-family: 'JetBrains Mono', monospace; }
-  .arch  { color: var(--muted); font-size: 11px; font-family: 'JetBrains Mono', monospace; }
-  .note  { color: var(--muted); font-size: 12px; max-width: 240px; white-space: normal; line-height: 1.4; }
+  .note  { color: var(--muted); font-size: 12px; max-width: 260px; white-space: normal; line-height: 1.4; }
+
+  /* arch row visibility */
+  .arch-row { transition: opacity .2s; }
+  .arch-row.hidden-row { display: none; }
 
   .empty { display: none; padding: 64px 32px; text-align: center; color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 13px; }
   .empty.visible { display: block; }
@@ -140,42 +178,63 @@
 
 <header>
   <div class="header-title">
-    <div class="logo">🐾 Stream AI Pet</div>
-    <h1>GPU Reference <span>— NVIDIA RTX / Workstation / Datacenter</span></h1>
+    <div class="logo" id="logo-text">🐾 Stream AI Pet</div>
+    <h1>GPU Reference <span id="h1-sub">— NVIDIA &amp; Intel</span></h1>
   </div>
-  <div class="controls">
-    <div class="search-wrap">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="search" id="search" placeholder="Search GPU…" autocomplete="off" spellcheck="false">
-    </div>
+  <div class="search-wrap">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="search" id="search" placeholder="Search GPU…" autocomplete="off" spellcheck="false">
   </div>
 </header>
 
 <div class="filter-section">
+
+  <!-- Row 1: Manufacturer -->
+  <div class="filter-row">
+    <span class="filter-label">Vendor</span>
+    <div class="pill active" data-mfr="all">All</div>
+    <div class="pill" data-mfr="nvidia">NVIDIA</div>
+    <div class="pill" data-mfr="intel">Intel</div>
+  </div>
+
+  <!-- Row 2: Category -->
   <div class="filter-row">
     <span class="filter-label">Category</span>
     <div class="pill active" data-cat="all">All</div>
-    <div class="pill" data-cat="geforce">GeForce</div>
+    <div class="pill" data-cat="consumer">Consumer</div>
     <div class="pill" data-cat="workstation">Workstation</div>
     <div class="pill" data-cat="datacenter">Datacenter</div>
   </div>
-  <div class="filter-row">
+
+  <!-- Row 3: Architecture — switches content based on vendor selection -->
+  <div class="filter-row arch-row" id="arch-row-nvidia">
     <span class="filter-label">Arch</span>
-    <div class="pill active" data-gen="all">All</div>
-    <div class="pill" data-gen="turing">Turing</div>
-    <div class="pill" data-gen="ampere">Ampere</div>
-    <div class="pill" data-gen="ada">Ada</div>
-    <div class="pill" data-gen="hopper">Hopper</div>
-    <div class="pill" data-gen="blackwell">Blackwell</div>
+    <div class="pill active" data-arch="all">All</div>
+    <div class="pill" data-arch="turing">Turing</div>
+    <div class="pill" data-arch="ampere">Ampere</div>
+    <div class="pill" data-arch="ada">Ada Lovelace</div>
+    <div class="pill" data-arch="hopper">Hopper</div>
+    <div class="pill" data-arch="blackwell">Blackwell</div>
   </div>
+
+  <div class="filter-row arch-row hidden-row" id="arch-row-intel">
+    <span class="filter-label">Arch</span>
+    <div class="pill active" data-arch="all">All</div>
+    <div class="pill" data-arch="alchemist">Alchemist (Xe)</div>
+    <div class="pill" data-arch="battlemage">Battlemage (Xe2)</div>
+    <div class="pill" data-arch="xe-hp">Xe-HP / Ponte Vecchio</div>
+    <div class="pill" data-arch="gaudi">Gaudi</div>
+    <div class="pill" data-arch="celestial">Celestial (Xe3) ↗</div>
+  </div>
+
 </div>
 
 <div class="stats">
   <span>Showing <strong id="count">—</strong> GPUs</span>
   <span class="sep">|</span>
-  <span>Desktop / workstation / server cards · no laptop SKUs</span>
+  <span>Desktop / workstation / server · no laptop SKUs</span>
   <span class="sep">|</span>
-  <span>LLM speed estimated on <strong>llama3.1:8b</strong> via Ollama</span>
+  <span>LLM speed via Ollama on <strong>llama3.1:8b</strong></span>
 </div>
 
 <div class="table-wrap">
@@ -183,10 +242,11 @@
     <thead>
       <tr>
         <th data-col="name">GPU <span class="sa">↕</span></th>
+        <th data-col="mfr">Vendor <span class="sa">↕</span></th>
         <th data-col="cat">Category <span class="sa">↕</span></th>
         <th data-col="arch">Arch <span class="sa">↕</span></th>
         <th data-col="vram">VRAM <span class="sa">↕</span></th>
-        <th data-col="vram" style="min-width:140px"> </th>
+        <th style="min-width:130px"> </th>
         <th data-col="fit">LLM Fit <span class="sa">↕</span></th>
         <th data-col="speed">Est. Speed <span class="sa">↕</span></th>
         <th>Notes</th>
@@ -198,163 +258,202 @@
 </div>
 
 <script>
-// cat: geforce | workstation | datacenter
-// arch: Turing | Ampere | Ada | Hopper | Blackwell
+// ── Data ──────────────────────────────────────────────────────────────────────
+// mfr: nvidia | intel
+// cat: geforce | consumer | workstation | datacenter
+// arch: exact string used for badge slug
 // vram: GB  speedRank: lower=faster  fit: great|good|ok|low
 const GPUS = [
 
-  // ════════════════════════════════════
-  // GeForce — RTX 20 (Turing)
-  // ════════════════════════════════════
-  { name:"RTX 2060",           cat:"geforce", arch:"Turing",    vram:6,   speedRank:10, fit:"low",   note:"6 GB — 3B models only" },
-  { name:"RTX 2060 Super",     cat:"geforce", arch:"Turing",    vram:8,   speedRank:9,  fit:"ok",    note:"8 GB; slower Turing tensor cores" },
-  { name:"RTX 2070",           cat:"geforce", arch:"Turing",    vram:8,   speedRank:9,  fit:"ok",    note:"Functional for 7B; Ampere+ preferred" },
-  { name:"RTX 2070 Super",     cat:"geforce", arch:"Turing",    vram:8,   speedRank:8,  fit:"ok",    note:"Best non-Ti Turing at 8 GB" },
-  { name:"RTX 2080",           cat:"geforce", arch:"Turing",    vram:8,   speedRank:8,  fit:"ok",    note:"Aging tensor cores; 8 GB ceiling" },
-  { name:"RTX 2080 Super",     cat:"geforce", arch:"Turing",    vram:8,   speedRank:7,  fit:"ok",    note:"Best 8 GB Turing consumer card" },
-  { name:"RTX 2080 Ti",        cat:"geforce", arch:"Turing",    vram:11,  speedRank:6,  fit:"good",  note:"11 GB headroom; best RTX 20 option" },
+  // ══════════════════════════════════
+  // NVIDIA — GeForce RTX 20 (Turing)
+  // ══════════════════════════════════
+  {mfr:"nvidia", name:"RTX 2060",              cat:"geforce",     arch:"Turing",    vram:6,   speedRank:10, fit:"low",   note:"6 GB — 3B models only"},
+  {mfr:"nvidia", name:"RTX 2060 Super",        cat:"geforce",     arch:"Turing",    vram:8,   speedRank:9,  fit:"ok",    note:"8 GB; older tensor cores"},
+  {mfr:"nvidia", name:"RTX 2070",              cat:"geforce",     arch:"Turing",    vram:8,   speedRank:9,  fit:"ok",    note:"Workable for 7B; Ampere+ preferred"},
+  {mfr:"nvidia", name:"RTX 2070 Super",        cat:"geforce",     arch:"Turing",    vram:8,   speedRank:8,  fit:"ok",    note:"Best non-Ti Turing at 8 GB"},
+  {mfr:"nvidia", name:"RTX 2080",              cat:"geforce",     arch:"Turing",    vram:8,   speedRank:8,  fit:"ok",    note:"8 GB ceiling; aging tensor cores"},
+  {mfr:"nvidia", name:"RTX 2080 Super",        cat:"geforce",     arch:"Turing",    vram:8,   speedRank:7,  fit:"ok",    note:"Best 8 GB Turing consumer card"},
+  {mfr:"nvidia", name:"RTX 2080 Ti",           cat:"geforce",     arch:"Turing",    vram:11,  speedRank:6,  fit:"good",  note:"11 GB headroom; best RTX 20 option"},
 
-  // ════════════════════════════════════
-  // GeForce — RTX 30 (Ampere)
-  // ════════════════════════════════════
-  { name:"RTX 3050 (6 GB)",    cat:"geforce", arch:"Ampere",    vram:6,   speedRank:10, fit:"low",   note:"6 GB — 3B models only" },
-  { name:"RTX 3050 (8 GB)",    cat:"geforce", arch:"Ampere",    vram:8,   speedRank:9,  fit:"ok",    note:"Entry Ampere; workable for 7B" },
-  { name:"RTX 3060 (8 GB)",    cat:"geforce", arch:"Ampere",    vram:8,   speedRank:8,  fit:"ok",    note:"Rare SKU; same cap as 3050 8GB" },
-  { name:"RTX 3060 (12 GB)",   cat:"geforce", arch:"Ampere",    vram:12,  speedRank:7,  fit:"good",  note:"Best value 30-series for LLM use" },
-  { name:"RTX 3060 Ti",        cat:"geforce", arch:"Ampere",    vram:8,   speedRank:7,  fit:"ok",    note:"Faster than 3060 but only 8 GB" },
-  { name:"RTX 3070",           cat:"geforce", arch:"Ampere",    vram:8,   speedRank:6,  fit:"ok",    note:"Fast but 8 GB limits model size" },
-  { name:"RTX 3070 Ti",        cat:"geforce", arch:"Ampere",    vram:8,   speedRank:6,  fit:"ok",    note:"Faster GDDR6X; still only 8 GB" },
-  { name:"RTX 3080 (10 GB)",   cat:"geforce", arch:"Ampere",    vram:10,  speedRank:5,  fit:"good",  note:"Strong; 10 GB limits 13B+" },
-  { name:"RTX 3080 (12 GB)",   cat:"geforce", arch:"Ampere",    vram:12,  speedRank:5,  fit:"good",  note:"12 GB variant — better for LLM" },
-  { name:"RTX 3080 Ti",        cat:"geforce", arch:"Ampere",    vram:12,  speedRank:4,  fit:"good",  note:"Top mid-tier Ampere; 13B headroom" },
-  { name:"RTX 3090",           cat:"geforce", arch:"Ampere",    vram:24,  speedRank:4,  fit:"great", note:"24 GB; 13B fully in VRAM, 70B partial" },
-  { name:"RTX 3090 Ti",        cat:"geforce", arch:"Ampere",    vram:24,  speedRank:3,  fit:"great", note:"Fastest Ampere; same 24 GB as 3090" },
+  // NVIDIA — GeForce RTX 30 (Ampere)
+  {mfr:"nvidia", name:"RTX 3050 (6 GB)",       cat:"geforce",     arch:"Ampere",    vram:6,   speedRank:10, fit:"low",   note:"6 GB — 3B models only"},
+  {mfr:"nvidia", name:"RTX 3050 (8 GB)",       cat:"geforce",     arch:"Ampere",    vram:8,   speedRank:9,  fit:"ok",    note:"Entry Ampere; workable for 7B"},
+  {mfr:"nvidia", name:"RTX 3060 (8 GB)",       cat:"geforce",     arch:"Ampere",    vram:8,   speedRank:8,  fit:"ok",    note:"Rare SKU; same cap as 3050 8 GB"},
+  {mfr:"nvidia", name:"RTX 3060 (12 GB)",      cat:"geforce",     arch:"Ampere",    vram:12,  speedRank:7,  fit:"good",  note:"Best value 30-series for LLM use"},
+  {mfr:"nvidia", name:"RTX 3060 Ti",           cat:"geforce",     arch:"Ampere",    vram:8,   speedRank:7,  fit:"ok",    note:"Faster than 3060 but only 8 GB"},
+  {mfr:"nvidia", name:"RTX 3070",              cat:"geforce",     arch:"Ampere",    vram:8,   speedRank:6,  fit:"ok",    note:"Fast but 8 GB limits model size"},
+  {mfr:"nvidia", name:"RTX 3070 Ti",           cat:"geforce",     arch:"Ampere",    vram:8,   speedRank:6,  fit:"ok",    note:"Faster GDDR6X; still 8 GB"},
+  {mfr:"nvidia", name:"RTX 3080 (10 GB)",      cat:"geforce",     arch:"Ampere",    vram:10,  speedRank:5,  fit:"good",  note:"Strong; 10 GB limits 13B+"},
+  {mfr:"nvidia", name:"RTX 3080 (12 GB)",      cat:"geforce",     arch:"Ampere",    vram:12,  speedRank:5,  fit:"good",  note:"12 GB variant — better for LLM"},
+  {mfr:"nvidia", name:"RTX 3080 Ti",           cat:"geforce",     arch:"Ampere",    vram:12,  speedRank:4,  fit:"good",  note:"Top mid-tier Ampere; 13B headroom"},
+  {mfr:"nvidia", name:"RTX 3090",              cat:"geforce",     arch:"Ampere",    vram:24,  speedRank:4,  fit:"great", note:"24 GB; 13B fully in VRAM, 70B partial"},
+  {mfr:"nvidia", name:"RTX 3090 Ti",           cat:"geforce",     arch:"Ampere",    vram:24,  speedRank:3,  fit:"great", note:"Fastest Ampere; same 24 GB"},
 
-  // ════════════════════════════════════
-  // GeForce — RTX 40 (Ada Lovelace)
-  // ════════════════════════════════════
-  { name:"RTX 4060 (8 GB)",         cat:"geforce", arch:"Ada", vram:8,  speedRank:7, fit:"ok",    note:"128-bit bus; 8 GB ceiling" },
-  { name:"RTX 4060 (16 GB)",        cat:"geforce", arch:"Ada", vram:16, speedRank:6, fit:"great", note:"16 GB SKU — great VRAM for the price" },
-  { name:"RTX 4060 Ti (8 GB)",      cat:"geforce", arch:"Ada", vram:8,  speedRank:6, fit:"ok",    note:"Faster than 4060; same 8 GB limit" },
-  { name:"RTX 4060 Ti (16 GB)",     cat:"geforce", arch:"Ada", vram:16, speedRank:6, fit:"great", note:"Best value Ada for LLM use" },
-  { name:"RTX 4070 (12 GB)",        cat:"geforce", arch:"Ada", vram:12, speedRank:5, fit:"good",  note:"Solid all-rounder for 13B" },
-  { name:"RTX 4070 Super (12 GB)",  cat:"geforce", arch:"Ada", vram:12, speedRank:5, fit:"good",  note:"Faster than 4070; same 12 GB" },
-  { name:"RTX 4070 Ti (12 GB)",     cat:"geforce", arch:"Ada", vram:12, speedRank:4, fit:"good",  note:"Strong; 12 GB limits 34B+" },
-  { name:"RTX 4070 Ti Super (16 GB)",cat:"geforce",arch:"Ada", vram:16, speedRank:4, fit:"great", note:"16 GB bump — recommended for 13B+" },
-  { name:"RTX 4080 (16 GB)",        cat:"geforce", arch:"Ada", vram:16, speedRank:3, fit:"great", note:"Excellent for 13B; 70B needs RAM offload" },
-  { name:"RTX 4080 Super (16 GB)",  cat:"geforce", arch:"Ada", vram:16, speedRank:3, fit:"great", note:"Marginally faster than 4080; same 16 GB" },
-  { name:"RTX 4090 (24 GB)",        cat:"geforce", arch:"Ada", vram:24, speedRank:2, fit:"great", note:"Best Ada GeForce; 24 GB handles most models" },
+  // NVIDIA — GeForce RTX 40 (Ada)
+  {mfr:"nvidia", name:"RTX 4060 (8 GB)",       cat:"geforce",     arch:"Ada",       vram:8,   speedRank:7,  fit:"ok",    note:"128-bit bus; 8 GB ceiling"},
+  {mfr:"nvidia", name:"RTX 4060 (16 GB)",      cat:"geforce",     arch:"Ada",       vram:16,  speedRank:6,  fit:"great", note:"16 GB SKU — great VRAM for the price"},
+  {mfr:"nvidia", name:"RTX 4060 Ti (8 GB)",    cat:"geforce",     arch:"Ada",       vram:8,   speedRank:6,  fit:"ok",    note:"Faster than 4060; same 8 GB limit"},
+  {mfr:"nvidia", name:"RTX 4060 Ti (16 GB)",   cat:"geforce",     arch:"Ada",       vram:16,  speedRank:6,  fit:"great", note:"Best value Ada for LLM use"},
+  {mfr:"nvidia", name:"RTX 4070 (12 GB)",      cat:"geforce",     arch:"Ada",       vram:12,  speedRank:5,  fit:"good",  note:"Solid all-rounder for 13B"},
+  {mfr:"nvidia", name:"RTX 4070 Super",        cat:"geforce",     arch:"Ada",       vram:12,  speedRank:5,  fit:"good",  note:"Faster than 4070; same 12 GB"},
+  {mfr:"nvidia", name:"RTX 4070 Ti",           cat:"geforce",     arch:"Ada",       vram:12,  speedRank:4,  fit:"good",  note:"Strong; 12 GB limits 34B+"},
+  {mfr:"nvidia", name:"RTX 4070 Ti Super",     cat:"geforce",     arch:"Ada",       vram:16,  speedRank:4,  fit:"great", note:"16 GB bump — recommended for 13B+"},
+  {mfr:"nvidia", name:"RTX 4080 (16 GB)",      cat:"geforce",     arch:"Ada",       vram:16,  speedRank:3,  fit:"great", note:"Excellent for 13B; 70B needs offload"},
+  {mfr:"nvidia", name:"RTX 4080 Super",        cat:"geforce",     arch:"Ada",       vram:16,  speedRank:3,  fit:"great", note:"Marginally faster than 4080"},
+  {mfr:"nvidia", name:"RTX 4090 (24 GB)",      cat:"geforce",     arch:"Ada",       vram:24,  speedRank:2,  fit:"great", note:"Best Ada GeForce; 24 GB for most models"},
 
-  // ════════════════════════════════════
-  // GeForce — RTX 50 (Blackwell)
-  // ════════════════════════════════════
-  { name:"RTX 5060 (8 GB)",         cat:"geforce", arch:"Blackwell", vram:8,  speedRank:6, fit:"ok",    note:"GDDR7 helps but 8 GB still limits" },
-  { name:"RTX 5060 Ti (8 GB)",      cat:"geforce", arch:"Blackwell", vram:8,  speedRank:5, fit:"ok",    note:"Buy the 16 GB version instead" },
-  { name:"RTX 5060 Ti (16 GB)",     cat:"geforce", arch:"Blackwell", vram:16, speedRank:5, fit:"great", note:"GDDR7 + 16 GB — strong entry Blackwell" },
-  { name:"RTX 5070 (12 GB)",        cat:"geforce", arch:"Blackwell", vram:12, speedRank:4, fit:"good",  note:"Fast GDDR7; 12 GB the main limit" },
-  { name:"RTX 5070 Ti (16 GB)",     cat:"geforce", arch:"Blackwell", vram:16, speedRank:3, fit:"great", note:"Excellent throughput; fits most models" },
-  { name:"RTX 5080 (16 GB)",        cat:"geforce", arch:"Blackwell", vram:16, speedRank:2, fit:"great", note:"Near-flagship; 16 GB handles 13B+" },
-  { name:"RTX 5090 (32 GB)",        cat:"geforce", arch:"Blackwell", vram:32, speedRank:1, fit:"great", note:"32 GB GDDR7 — 70B nearly fits in VRAM" },
+  // NVIDIA — GeForce RTX 50 (Blackwell)
+  {mfr:"nvidia", name:"RTX 5060 (8 GB)",       cat:"geforce",     arch:"Blackwell", vram:8,   speedRank:7,  fit:"ok",    note:"GDDR7 helps; 8 GB still limits"},
+  {mfr:"nvidia", name:"RTX 5060 Ti (8 GB)",    cat:"geforce",     arch:"Blackwell", vram:8,   speedRank:5,  fit:"ok",    note:"Buy the 16 GB version instead"},
+  {mfr:"nvidia", name:"RTX 5060 Ti (16 GB)",   cat:"geforce",     arch:"Blackwell", vram:16,  speedRank:5,  fit:"great", note:"GDDR7 + 16 GB — strong entry Blackwell"},
+  {mfr:"nvidia", name:"RTX 5070 (12 GB)",      cat:"geforce",     arch:"Blackwell", vram:12,  speedRank:4,  fit:"good",  note:"Fast GDDR7; 12 GB the main limit"},
+  {mfr:"nvidia", name:"RTX 5070 Ti (16 GB)",   cat:"geforce",     arch:"Blackwell", vram:16,  speedRank:3,  fit:"great", note:"Excellent throughput; fits most models"},
+  {mfr:"nvidia", name:"RTX 5080 (16 GB)",      cat:"geforce",     arch:"Blackwell", vram:16,  speedRank:2,  fit:"great", note:"Near-flagship; 16 GB handles 13B+"},
+  {mfr:"nvidia", name:"RTX 5090 (32 GB)",      cat:"geforce",     arch:"Blackwell", vram:32,  speedRank:1,  fit:"great", note:"32 GB GDDR7 — 70B nearly fits in VRAM"},
 
-  // ════════════════════════════════════
-  // Workstation — Ampere (RTX A-series)
-  // ════════════════════════════════════
-  { name:"RTX A2000 (6 GB)",   cat:"workstation", arch:"Ampere", vram:6,  speedRank:10, fit:"low",   note:"Low-profile; ECC; 3B models only" },
-  { name:"RTX A2000 (12 GB)",  cat:"workstation", arch:"Ampere", vram:12, speedRank:8,  fit:"good",  note:"Low-profile ECC; good 13B headroom" },
-  { name:"RTX A4000 (16 GB)",  cat:"workstation", arch:"Ampere", vram:16, speedRank:6,  fit:"great", note:"Single-slot; ECC; excellent LLM card" },
-  { name:"RTX A4500 (20 GB)",  cat:"workstation", arch:"Ampere", vram:20, speedRank:5,  fit:"great", note:"20 GB ECC; strong 13B–34B performance" },
-  { name:"RTX A5000 (24 GB)",  cat:"workstation", arch:"Ampere", vram:24, speedRank:4,  fit:"great", note:"24 GB ECC; 13B fully in VRAM; 70B partial" },
-  { name:"RTX A5500 (24 GB)",  cat:"workstation", arch:"Ampere", vram:24, speedRank:4,  fit:"great", note:"Faster than A5000; same 24 GB ECC" },
-  { name:"RTX A6000 (48 GB)",  cat:"workstation", arch:"Ampere", vram:48, speedRank:3,  fit:"great", note:"48 GB ECC — 70B fits fully in VRAM" },
+  // NVIDIA — Workstation Ampere (RTX A-series)
+  {mfr:"nvidia", name:"RTX A2000 (6 GB)",      cat:"workstation", arch:"Ampere",    vram:6,   speedRank:10, fit:"low",   note:"Low-profile ECC; 3B models only"},
+  {mfr:"nvidia", name:"RTX A2000 (12 GB)",     cat:"workstation", arch:"Ampere",    vram:12,  speedRank:8,  fit:"good",  note:"Low-profile ECC; good 13B headroom"},
+  {mfr:"nvidia", name:"RTX A4000 (16 GB)",     cat:"workstation", arch:"Ampere",    vram:16,  speedRank:6,  fit:"great", note:"Single-slot ECC; excellent LLM card"},
+  {mfr:"nvidia", name:"RTX A4500 (20 GB)",     cat:"workstation", arch:"Ampere",    vram:20,  speedRank:5,  fit:"great", note:"20 GB ECC; strong 13B–34B performance"},
+  {mfr:"nvidia", name:"RTX A5000 (24 GB)",     cat:"workstation", arch:"Ampere",    vram:24,  speedRank:4,  fit:"great", note:"24 GB ECC; 13B fully in VRAM"},
+  {mfr:"nvidia", name:"RTX A5500 (24 GB)",     cat:"workstation", arch:"Ampere",    vram:24,  speedRank:4,  fit:"great", note:"Faster than A5000; same 24 GB ECC"},
+  {mfr:"nvidia", name:"RTX A6000 (48 GB)",     cat:"workstation", arch:"Ampere",    vram:48,  speedRank:3,  fit:"great", note:"48 GB ECC — 70B fits fully in VRAM"},
 
-  // ════════════════════════════════════
-  // Workstation — Ada Lovelace
-  // ════════════════════════════════════
-  { name:"RTX 4000 Ada (20 GB)",     cat:"workstation", arch:"Ada", vram:20, speedRank:6, fit:"great", note:"Single-slot; 20 GB ECC; power-efficient" },
-  { name:"RTX 4000 Ada SFF (20 GB)", cat:"workstation", arch:"Ada", vram:20, speedRank:6, fit:"great", note:"Low-profile SFF variant; 70 W TDP" },
-  { name:"RTX 4500 Ada (24 GB)",     cat:"workstation", arch:"Ada", vram:24, speedRank:5, fit:"great", note:"24 GB ECC; replaces A4500" },
-  { name:"RTX 5000 Ada (32 GB)",     cat:"workstation", arch:"Ada", vram:32, speedRank:4, fit:"great", note:"32 GB GDDR6X ECC; 70B Q4 fits fully" },
-  { name:"RTX 6000 Ada (48 GB)",     cat:"workstation", arch:"Ada", vram:48, speedRank:3, fit:"great", note:"48 GB ECC; 70B FP16 fits; top Ada workstation" },
+  // NVIDIA — Workstation Ada
+  {mfr:"nvidia", name:"RTX 4000 Ada (20 GB)",       cat:"workstation", arch:"Ada", vram:20, speedRank:6, fit:"great", note:"Single-slot 20 GB ECC; power-efficient"},
+  {mfr:"nvidia", name:"RTX 4000 Ada SFF (20 GB)",   cat:"workstation", arch:"Ada", vram:20, speedRank:6, fit:"great", note:"Low-profile SFF variant; 70 W TDP"},
+  {mfr:"nvidia", name:"RTX 4500 Ada (24 GB)",       cat:"workstation", arch:"Ada", vram:24, speedRank:5, fit:"great", note:"24 GB ECC; replaces A4500"},
+  {mfr:"nvidia", name:"RTX 5000 Ada (32 GB)",       cat:"workstation", arch:"Ada", vram:32, speedRank:4, fit:"great", note:"32 GB GDDR6X ECC; 70B Q4 fits fully"},
+  {mfr:"nvidia", name:"RTX 6000 Ada (48 GB)",       cat:"workstation", arch:"Ada", vram:48, speedRank:3, fit:"great", note:"48 GB ECC; 70B FP16 fits; top Ada WS"},
 
-  // ════════════════════════════════════
-  // Workstation — Blackwell (RTX Pro)
-  // ════════════════════════════════════
-  { name:"RTX Pro 2000 (16 GB)",     cat:"workstation", arch:"Blackwell", vram:16, speedRank:6, fit:"great", note:"Low-profile; 70 W; GB206 chip" },
-  { name:"RTX Pro 4000 (24 GB)",     cat:"workstation", arch:"Blackwell", vram:24, speedRank:5, fit:"great", note:"Single-slot; 140 W; 24 GB GDDR7" },
-  { name:"RTX Pro 4000 SFF (24 GB)", cat:"workstation", arch:"Blackwell", vram:24, speedRank:5, fit:"great", note:"Low-profile SFF; 70 W; GDDR6" },
-  { name:"RTX Pro 4500 (32 GB)",     cat:"workstation", arch:"Blackwell", vram:32, speedRank:4, fit:"great", note:"32 GB GDDR7; 200 W; dual-slot" },
-  { name:"RTX Pro 5000 (48 GB)",     cat:"workstation", arch:"Blackwell", vram:48, speedRank:3, fit:"great", note:"48 GB GDDR7 variant; 300 W" },
-  { name:"RTX Pro 5000 (72 GB)",     cat:"workstation", arch:"Blackwell", vram:72, speedRank:3, fit:"great", note:"72 GB GDDR7 variant; 70B FP16 fits easily" },
-  { name:"RTX Pro 6000 (96 GB)",     cat:"workstation", arch:"Blackwell", vram:96, speedRank:2, fit:"great", note:"96 GB GDDR7 ECC; 70B+ models no problem" },
+  // NVIDIA — Workstation Blackwell (RTX Pro)
+  {mfr:"nvidia", name:"RTX Pro 2000 (16 GB)",       cat:"workstation", arch:"Blackwell", vram:16, speedRank:6, fit:"great", note:"Low-profile; 70 W; GB206 chip"},
+  {mfr:"nvidia", name:"RTX Pro 4000 (24 GB)",       cat:"workstation", arch:"Blackwell", vram:24, speedRank:5, fit:"great", note:"Single-slot; 140 W; 24 GB GDDR7"},
+  {mfr:"nvidia", name:"RTX Pro 4000 SFF (24 GB)",   cat:"workstation", arch:"Blackwell", vram:24, speedRank:5, fit:"great", note:"Low-profile SFF; 70 W; GDDR6"},
+  {mfr:"nvidia", name:"RTX Pro 4500 (32 GB)",       cat:"workstation", arch:"Blackwell", vram:32, speedRank:4, fit:"great", note:"32 GB GDDR7; 200 W; dual-slot"},
+  {mfr:"nvidia", name:"RTX Pro 5000 (48 GB)",       cat:"workstation", arch:"Blackwell", vram:48, speedRank:3, fit:"great", note:"48 GB GDDR7; 300 W"},
+  {mfr:"nvidia", name:"RTX Pro 5000 (72 GB)",       cat:"workstation", arch:"Blackwell", vram:72, speedRank:3, fit:"great", note:"72 GB GDDR7; 70B FP16 fits easily"},
+  {mfr:"nvidia", name:"RTX Pro 6000 (96 GB)",       cat:"workstation", arch:"Blackwell", vram:96, speedRank:2, fit:"great", note:"96 GB GDDR7 ECC; 70B+ no problem"},
 
-  // ════════════════════════════════════
-  // Datacenter — Ampere
-  // ════════════════════════════════════
-  { name:"A100 (40 GB PCIe)",  cat:"datacenter", arch:"Ampere", vram:40,  speedRank:4, fit:"great", note:"HBM2e; 40 GB; server PCIe card" },
-  { name:"A100 (80 GB SXM)",   cat:"datacenter", arch:"Ampere", vram:80,  speedRank:3, fit:"great", note:"HBM2e; 80 GB; highest bandwidth Ampere" },
-  { name:"A40 (48 GB)",        cat:"datacenter", arch:"Ampere", vram:48,  speedRank:4, fit:"great", note:"GDDR6; 48 GB; good inference value card" },
+  // NVIDIA — Datacenter Ampere
+  {mfr:"nvidia", name:"A40 (48 GB)",           cat:"datacenter",  arch:"Ampere",    vram:48,  speedRank:4,  fit:"great", note:"GDDR6; 48 GB; good inference value"},
+  {mfr:"nvidia", name:"A100 (40 GB PCIe)",     cat:"datacenter",  arch:"Ampere",    vram:40,  speedRank:4,  fit:"great", note:"HBM2e; 40 GB; server PCIe card"},
+  {mfr:"nvidia", name:"A100 (80 GB SXM)",      cat:"datacenter",  arch:"Ampere",    vram:80,  speedRank:3,  fit:"great", note:"HBM2e; 80 GB; highest bandwidth Ampere"},
 
-  // ════════════════════════════════════
-  // Datacenter — Ada Lovelace
-  // ════════════════════════════════════
-  { name:"L4 (24 GB)",         cat:"datacenter", arch:"Ada",    vram:24,  speedRank:6, fit:"great", note:"72 W; GDDR6; efficient inference card" },
-  { name:"L40 (48 GB)",        cat:"datacenter", arch:"Ada",    vram:48,  speedRank:4, fit:"great", note:"GDDR6; 48 GB; graphics + inference" },
-  { name:"L40S (48 GB)",       cat:"datacenter", arch:"Ada",    vram:48,  speedRank:3, fit:"great", note:"Faster than L40; top Ada inference card" },
+  // NVIDIA — Datacenter Ada
+  {mfr:"nvidia", name:"L4 (24 GB)",            cat:"datacenter",  arch:"Ada",       vram:24,  speedRank:6,  fit:"great", note:"72 W; GDDR6; efficient inference card"},
+  {mfr:"nvidia", name:"L40 (48 GB)",           cat:"datacenter",  arch:"Ada",       vram:48,  speedRank:4,  fit:"great", note:"GDDR6; 48 GB; graphics + inference"},
+  {mfr:"nvidia", name:"L40S (48 GB)",          cat:"datacenter",  arch:"Ada",       vram:48,  speedRank:3,  fit:"great", note:"Faster than L40; top Ada inference"},
 
-  // ════════════════════════════════════
-  // Datacenter — Hopper
-  // ════════════════════════════════════
-  { name:"H100 (80 GB PCIe)",  cat:"datacenter", arch:"Hopper", vram:80,  speedRank:2, fit:"great", note:"HBM2e; 80 GB; ~2 TB/s bandwidth" },
-  { name:"H100 (80 GB SXM)",   cat:"datacenter", arch:"Hopper", vram:80,  speedRank:1, fit:"great", note:"HBM3; 80 GB; 3.35 TB/s; top Hopper" },
-  { name:"H200 (141 GB SXM)",  cat:"datacenter", arch:"Hopper", vram:141, speedRank:1, fit:"great", note:"HBM3e; 141 GB; ~4.8 TB/s; largest Hopper" },
+  // NVIDIA — Datacenter Hopper
+  {mfr:"nvidia", name:"H100 (80 GB PCIe)",     cat:"datacenter",  arch:"Hopper",    vram:80,  speedRank:2,  fit:"great", note:"HBM2e; 80 GB; ~2 TB/s bandwidth"},
+  {mfr:"nvidia", name:"H100 (80 GB SXM)",      cat:"datacenter",  arch:"Hopper",    vram:80,  speedRank:1,  fit:"great", note:"HBM3; 80 GB; 3.35 TB/s; top Hopper"},
+  {mfr:"nvidia", name:"H200 (141 GB SXM)",     cat:"datacenter",  arch:"Hopper",    vram:141, speedRank:1,  fit:"great", note:"HBM3e; 141 GB; ~4.8 TB/s"},
 
-  // ════════════════════════════════════
-  // Datacenter — Blackwell
-  // ════════════════════════════════════
-  { name:"B200 (192 GB SXM)",  cat:"datacenter", arch:"Blackwell", vram:192, speedRank:1, fit:"great", note:"HBM3e; 192 GB; top Blackwell datacenter" },
+  // NVIDIA — Datacenter Blackwell
+  {mfr:"nvidia", name:"B200 (192 GB SXM)",     cat:"datacenter",  arch:"Blackwell", vram:192, speedRank:1,  fit:"great", note:"HBM3e; 192 GB; top Blackwell datacenter"},
+
+  // ══════════════════════════════════
+  // Intel — Consumer Alchemist
+  // ══════════════════════════════════
+  {mfr:"intel", name:"Arc A310",               cat:"consumer",    arch:"Alchemist", vram:4,   speedRank:12, fit:"low",   note:"4 GB — most LLMs won't load"},
+  {mfr:"intel", name:"Arc A380",               cat:"consumer",    arch:"Alchemist", vram:6,   speedRank:11, fit:"low",   note:"6 GB; 8 Xe cores; 3B models only"},
+  {mfr:"intel", name:"Arc A580",               cat:"consumer",    arch:"Alchemist", vram:8,   speedRank:9,  fit:"ok",    note:"24 Xe cores; 8 GB; 7B workable"},
+  {mfr:"intel", name:"Arc A750",               cat:"consumer",    arch:"Alchemist", vram:8,   speedRank:8,  fit:"ok",    note:"28 Xe cores; 8 GB; good mid-range"},
+  {mfr:"intel", name:"Arc A770 (8 GB)",        cat:"consumer",    arch:"Alchemist", vram:8,   speedRank:7,  fit:"ok",    note:"Flagship Alchemist; AIB 8 GB version"},
+  {mfr:"intel", name:"Arc A770 (16 GB)",       cat:"consumer",    arch:"Alchemist", vram:16,  speedRank:7,  fit:"great", note:"Flagship Alchemist LE; best A-series for LLM"},
+
+  // Intel — Consumer Battlemage
+  {mfr:"intel", name:"Arc B570",               cat:"consumer",    arch:"Battlemage",vram:10,  speedRank:6,  fit:"good",  note:"16 Xe2 cores; 10 GB GDDR6; solid 7B–13B"},
+  {mfr:"intel", name:"Arc B580",               cat:"consumer",    arch:"Battlemage",vram:12,  speedRank:5,  fit:"good",  note:"20 Xe2 cores; 12 GB GDDR6; flagship consumer"},
+  {mfr:"intel", name:"Arc B770",               cat:"consumer",    arch:"Battlemage",vram:16,  speedRank:4,  fit:"great", note:"32 Xe2 cores; 16 GB GDDR6; ~RTX 5060 Ti class"},
+
+  // Intel — Workstation Alchemist Pro
+  {mfr:"intel", name:"Arc Pro A40",            cat:"workstation", arch:"Alchemist", vram:6,   speedRank:11, fit:"low",   note:"Entry Pro; 6 GB ECC; low-profile SFF"},
+  {mfr:"intel", name:"Arc Pro A50",            cat:"workstation", arch:"Alchemist", vram:8,   speedRank:10, fit:"ok",    note:"8 GB ECC; low-profile dual-slot"},
+  {mfr:"intel", name:"Arc Pro A60",            cat:"workstation", arch:"Alchemist", vram:12,  speedRank:8,  fit:"good",  note:"16 Xe cores; 12 GB ECC; single-slot; 130 W"},
+
+  // Intel — Workstation Battlemage Pro
+  {mfr:"intel", name:"Arc Pro B50",            cat:"workstation", arch:"Battlemage",vram:16,  speedRank:5,  fit:"great", note:"20 Xe2 cores; 16 GB ECC; ~$370; 120–200 W"},
+  {mfr:"intel", name:"Arc Pro B60",            cat:"workstation", arch:"Battlemage",vram:24,  speedRank:4,  fit:"great", note:"20 Xe2 cores; 24 GB ECC; ~$500; strong LLM"},
+  {mfr:"intel", name:"Arc Pro B65",            cat:"workstation", arch:"Battlemage",vram:24,  speedRank:4,  fit:"great", note:"Mid-tier B-series Pro; 24 GB ECC"},
+  {mfr:"intel", name:"Arc Pro B70",            cat:"workstation", arch:"Battlemage",vram:32,  speedRank:3,  fit:"great", note:"32 Xe2 cores; 32 GB ECC; ~$949; top Battlemage Pro"},
+
+  // Intel — Datacenter Flex (Xe-HP)
+  {mfr:"intel", name:"DC GPU Flex 140",        cat:"datacenter",  arch:"Xe-HP",     vram:16,  speedRank:7,  fit:"great", note:"2×8 GB GDDR6; inference + media; PCIe"},
+  {mfr:"intel", name:"DC GPU Flex 170",        cat:"datacenter",  arch:"Xe-HP",     vram:32,  speedRank:6,  fit:"great", note:"2×16 GB GDDR6; 150 W; inference workloads"},
+
+  // Intel — Datacenter Ponte Vecchio (Xe-HPC)
+  {mfr:"intel", name:"DC GPU Max 1100",        cat:"datacenter",  arch:"Xe-HP",     vram:48,  speedRank:3,  fit:"great", note:"HBM2e; 48 GB; 300 W; single-tile Xe-HPC"},
+  {mfr:"intel", name:"DC GPU Max 1550",        cat:"datacenter",  arch:"Xe-HP",     vram:128, speedRank:2,  fit:"great", note:"HBM2e; 128 GB; 600 W; dual-tile Ponte Vecchio"},
+
+  // Intel — Datacenter Gaudi
+  {mfr:"intel", name:"Gaudi 2",               cat:"datacenter",  arch:"Gaudi",     vram:96,  speedRank:3,  fit:"great", note:"HBM2e; 96 GB; 2.45 TB/s; training + inference"},
+  {mfr:"intel", name:"Gaudi 3 (PCIe)",        cat:"datacenter",  arch:"Gaudi",     vram:128, speedRank:2,  fit:"great", note:"HBM2e; 128 GB; 3.7 TB/s; 600 W PCIe"},
+  {mfr:"intel", name:"Gaudi 3 (OAM)",         cat:"datacenter",  arch:"Gaudi",     vram:128, speedRank:1,  fit:"great", note:"HBM2e; 128 GB; 3.7 TB/s; up to 900 W"},
+
+  // Intel — Datacenter Celestial (upcoming)
+  {mfr:"intel", name:"Crescent Island (Xe3)", cat:"datacenter",  arch:"Celestial", vram:160, speedRank:1,  fit:"great", note:"LPDDR5X; 160 GB; Xe3P; sampling H2 2026"},
 ];
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
 const MAX_VRAM = 192;
-const FIT_LABEL = { great:"✦ Great", good:"✓ Good", ok:"~ OK", low:"✗ Limited" };
-const FIT_CLASS = { great:"fit-great", good:"fit-good", ok:"fit-ok", low:"fit-low" };
+const FIT_LABEL = {great:"✦ Great", good:"✓ Good", ok:"~ OK", low:"✗ Limited"};
+const FIT_CLASS = {great:"fit-great", good:"fit-good", ok:"fit-ok", low:"fit-low"};
+const CAT_LABEL = {geforce:"GeForce", consumer:"Consumer", workstation:"Workstation", datacenter:"Datacenter"};
+
+function archSlug(a) { return a.toLowerCase().replace(/\s+/g,"-").replace(/[^a-z0-9-]/g,""); }
 
 function speedLabel(r) {
   if (r <= 1) return "~1–3s";
   if (r <= 2) return "~2–5s";
-  if (r <= 3) return "~3–7s";
-  if (r <= 4) return "~4–9s";
-  if (r <= 6) return "~5–12s";
-  if (r <= 8) return "~8–18s";
-  return "~15–25s";
+  if (r <= 3) return "~3–8s";
+  if (r <= 4) return "~4–10s";
+  if (r <= 6) return "~6–14s";
+  if (r <= 8) return "~10–20s";
+  return "~15–30s";
 }
 
 function vramColor(gb) {
-  if (gb >= 48)  return "#76c442";
-  if (gb >= 24)  return "#4ade80";
+  if (gb >= 96)  return "#22d3ee";
+  if (gb >= 48)  return "#4ade80";
+  if (gb >= 24)  return "#76c442";
   if (gb >= 16)  return "#facc15";
   if (gb >= 10)  return "#fb923c";
   if (gb >= 8)   return "#f97316";
   return "#f87171";
 }
 
-const tbody  = document.getElementById("tbody");
+// ── State ─────────────────────────────────────────────────────────────────────
+let activeMfr  = "all";
+let activeCat  = "all";
+let activeArch = "all";
+let sortCol    = null;
+let sortAsc    = true;
+let currentData = [...GPUS];
+
+const tbody   = document.getElementById("tbody");
 const countEl = document.getElementById("count");
 const emptyEl = document.getElementById("empty");
 
-function archSlug(a) { return a.toLowerCase(); }
-
+// ── Render ────────────────────────────────────────────────────────────────────
 function renderRows(data) {
   tbody.innerHTML = "";
   data.forEach(g => {
-    const barPct = Math.round((g.vram / MAX_VRAM) * 100);
     const aSlug  = archSlug(g.arch);
+    const barPct = Math.round((g.vram / MAX_VRAM) * 100);
+    const catKey = g.cat === "geforce" ? "geforce" : g.cat;
     const tr = document.createElement("tr");
+    tr.dataset.mfr  = g.mfr;
     tr.dataset.cat  = g.cat;
     tr.dataset.arch = aSlug;
     tr.dataset.name = g.name.toLowerCase();
     tr.innerHTML = `
       <td><span class="gpu-name">${g.name}</span></td>
-      <td><span class="cat-badge cat-${g.cat}">${g.cat === "geforce" ? "GeForce" : g.cat === "workstation" ? "Workstation" : "Datacenter"}</span></td>
+      <td><span class="mfr-dot mfr-${g.mfr}"></span><span style="font-size:12px;color:var(--dim);font-family:'JetBrains Mono',monospace">${g.mfr === "nvidia" ? "NVIDIA" : "Intel"}</span></td>
+      <td><span class="cat-badge cat-${catKey}">${CAT_LABEL[catKey] || g.cat}</span></td>
       <td><span class="badge b-${aSlug}">${g.arch}</span></td>
       <td><span class="vram" style="color:${vramColor(g.vram)}">${g.vram} GB</span></td>
       <td><div class="vram-bar-wrap"><div class="vram-bar"><div class="vram-bar-fill" style="width:${barPct}%;background:${vramColor(g.vram)}"></div></div></div></td>
@@ -366,48 +465,73 @@ function renderRows(data) {
   });
 }
 
-let activeCat = "all";
-let activeGen = "all";
-let sortCol   = null;
-let sortAsc   = true;
-
+// ── Filter ────────────────────────────────────────────────────────────────────
 function applyFilters() {
   const query = document.getElementById("search").value.trim().toLowerCase();
   const rows  = Array.from(tbody.querySelectorAll("tr"));
   let visible = 0;
   rows.forEach(row => {
-    const catOk  = activeCat === "all" || row.dataset.cat  === activeCat;
-    const genOk  = activeGen === "all" || row.dataset.arch === activeGen;
-    const txtOk  = !query   || row.dataset.name.includes(query) || row.dataset.cat.includes(query) || row.dataset.arch.includes(query);
-    if (catOk && genOk && txtOk) { row.classList.remove("hidden"); visible++; }
+    const mfrOk  = activeMfr  === "all" || row.dataset.mfr  === activeMfr;
+    const catOk  = activeCat  === "all" || row.dataset.cat  === activeCat || (activeCat === "consumer" && row.dataset.cat === "geforce");
+    const archOk = activeArch === "all" || row.dataset.arch === activeArch;
+    const txtOk  = !query || row.dataset.name.includes(query) || row.dataset.arch.includes(query) || row.dataset.mfr.includes(query);
+    if (mfrOk && catOk && archOk && txtOk) { row.classList.remove("hidden"); visible++; }
     else row.classList.add("hidden");
   });
   countEl.textContent = visible;
   emptyEl.classList.toggle("visible", visible === 0);
 }
 
-function sortData(col) {
-  if (sortCol === col) sortAsc = !sortAsc; else { sortCol = col; sortAsc = true; }
-  document.querySelectorAll("thead th[data-col]").forEach(th => {
-    th.classList.toggle("sorted", th.dataset.col === col && !th.nextElementSibling);
-  });
-  // re-sort and re-render
-  const sorted = [...GPUS].sort((a, b) => {
+// ── Sort ──────────────────────────────────────────────────────────────────────
+function applySort() {
+  if (!sortCol) return;
+  currentData.sort((a, b) => {
     let va, vb;
-    if (col === "name")  { va = a.name; vb = b.name; }
-    if (col === "cat")   { va = a.cat;  vb = b.cat; }
-    if (col === "arch")  { va = a.arch; vb = b.arch; }
-    if (col === "vram")  { va = a.vram; vb = b.vram; }
-    if (col === "fit")   { const o={great:0,good:1,ok:2,low:3}; va=o[a.fit]; vb=o[b.fit]; }
-    if (col === "speed") { va = a.speedRank; vb = b.speedRank; }
+    if (sortCol === "name")  { va = a.name;  vb = b.name; }
+    if (sortCol === "mfr")   { va = a.mfr;   vb = b.mfr; }
+    if (sortCol === "cat")   { va = a.cat;   vb = b.cat; }
+    if (sortCol === "arch")  { va = a.arch;  vb = b.arch; }
+    if (sortCol === "vram")  { va = a.vram;  vb = b.vram; }
+    if (sortCol === "fit")   { const o={great:0,good:1,ok:2,low:3}; va=o[a.fit]; vb=o[b.fit]; }
+    if (sortCol === "speed") { va = a.speedRank; vb = b.speedRank; }
     if (typeof va === "string") return sortAsc ? va.localeCompare(vb) : vb.localeCompare(va);
     return sortAsc ? va - vb : vb - va;
   });
-  renderRows(sorted);
-  applyFilters();
 }
 
+// ── Arch row switcher ─────────────────────────────────────────────────────────
+function updateArchRow() {
+  const nvRow = document.getElementById("arch-row-nvidia");
+  const inRow = document.getElementById("arch-row-intel");
+  if (activeMfr === "intel") {
+    nvRow.classList.add("hidden-row");
+    inRow.classList.remove("hidden-row");
+  } else if (activeMfr === "nvidia") {
+    inRow.classList.add("hidden-row");
+    nvRow.classList.remove("hidden-row");
+  } else {
+    // both hidden when "all" — show nvidia row as default
+    nvRow.classList.remove("hidden-row");
+    inRow.classList.add("hidden-row");
+  }
+  // reset arch filter when switching vendor
+  activeArch = "all";
+  document.querySelectorAll(".pill[data-arch]").forEach(p => p.classList.toggle("active", p.dataset.arch === "all"));
+}
+
+// ── Event listeners ───────────────────────────────────────────────────────────
 document.getElementById("search").addEventListener("input", applyFilters);
+
+document.querySelectorAll(".pill[data-mfr]").forEach(pill => {
+  pill.addEventListener("click", () => {
+    document.querySelectorAll(".pill[data-mfr]").forEach(p => p.classList.remove("active"));
+    pill.classList.add("active");
+    activeMfr = pill.dataset.mfr;
+    updateArchRow();
+    renderRows(currentData);
+    applyFilters();
+  });
+});
 
 document.querySelectorAll(".pill[data-cat]").forEach(pill => {
   pill.addEventListener("click", () => {
@@ -418,20 +542,30 @@ document.querySelectorAll(".pill[data-cat]").forEach(pill => {
   });
 });
 
-document.querySelectorAll(".pill[data-gen]").forEach(pill => {
+document.querySelectorAll(".pill[data-arch]").forEach(pill => {
   pill.addEventListener("click", () => {
-    document.querySelectorAll(".pill[data-gen]").forEach(p => p.classList.remove("active"));
+    // only affect pills in the currently visible arch row
+    const visibleRow = document.querySelector(".arch-row:not(.hidden-row)");
+    visibleRow.querySelectorAll(".pill[data-arch]").forEach(p => p.classList.remove("active"));
     pill.classList.add("active");
-    activeGen = pill.dataset.gen;
+    activeArch = pill.dataset.arch;
     applyFilters();
   });
 });
 
 document.querySelectorAll("thead th[data-col]").forEach(th => {
-  th.addEventListener("click", () => sortData(th.dataset.col));
+  th.addEventListener("click", () => {
+    if (sortCol === th.dataset.col) sortAsc = !sortAsc;
+    else { sortCol = th.dataset.col; sortAsc = true; }
+    document.querySelectorAll("thead th[data-col]").forEach(t => t.classList.toggle("sorted", t.dataset.col === sortCol));
+    applySort();
+    renderRows(currentData);
+    applyFilters();
+  });
 });
 
-renderRows(GPUS);
+// ── Init ──────────────────────────────────────────────────────────────────────
+renderRows(currentData);
 applyFilters();
 </script>
 </body>
