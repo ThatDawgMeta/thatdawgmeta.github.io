@@ -107,10 +107,139 @@
   thead th.sorted { color: var(--accent); }
   thead th .sa { margin-left: 4px; opacity: .4; }
   thead th.sorted .sa { opacity: 1; }
-  tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
-  tbody tr:hover { background: rgba(255,255,255,.02); }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; cursor: pointer; }
+  tbody tr:hover { background: rgba(255,255,255,.03); }
   tbody tr.hidden { display: none; }
+  tbody tr.expanded { background: rgba(255,255,255,.04); }
   td { padding: 10px 14px; white-space: nowrap; vertical-align: middle; }
+
+  /* ── Expand chevron ── */
+  .chevron { display: inline-block; font-size: 10px; color: var(--muted); margin-left: 8px; transition: transform .2s; vertical-align: middle; }
+  tr.expanded .chevron { transform: rotate(90deg); color: var(--accent); }
+
+  /* ── Detail panel row ── */
+  tr.detail-row td { padding: 0; background: var(--surface); border-bottom: 2px solid var(--border2); }
+  tr.detail-row.hidden { display: none; }
+
+  .detail-panel {
+    padding: 20px 24px 24px;
+    border-left: 3px solid var(--accent);
+  }
+
+  .detail-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .detail-gpu-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .detail-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .detail-note {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+
+  /* model table inside panel */
+  .model-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  .model-table th {
+    background: rgba(255,255,255,.04);
+    border-bottom: 1px solid var(--border2);
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    padding: 7px 12px;
+    text-align: left;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .model-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+
+  .model-table tr:last-child td { border-bottom: none; }
+  .model-table tr:hover td { background: rgba(255,255,255,.02); }
+
+  .model-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--text);
+  }
+
+  .model-tag {
+    display: inline-block;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 6px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .tag-rec  { background: rgba(118,196,66,.18); color: #76c442; }
+  .tag-sys  { background: rgba(245,158,11,.15); color: #f59e0b; }
+  .tag-warn { background: rgba(248,113,113,.15); color: #f87171; }
+
+  .model-vram { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--dim); }
+  .model-speed { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--dim); }
+  .model-quality { font-size: 12px; color: var(--dim); }
+  .model-pull {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    background: rgba(255,255,255,.04);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    padding: 2px 8px;
+    cursor: pointer;
+    transition: all .15s;
+    white-space: nowrap;
+  }
+  .model-pull:hover { color: var(--text); border-color: var(--accent); }
+  .model-pull.copied { color: var(--accent); border-color: var(--accent); }
+
+  .detail-footer {
+    margin-top: 14px;
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .offload-note {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background: rgba(245,158,11,.08);
+    border-left: 2px solid #f59e0b;
+    border-radius: 0 4px 4px 0;
+    font-size: 12px;
+    color: #d4a855;
+  }
 
   /* ── Cell components ── */
   .gpu-name { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; }
@@ -234,7 +363,7 @@
   <span class="sep">|</span>
   <span>Desktop / workstation / server · no laptop SKUs</span>
   <span class="sep">|</span>
-  <span>LLM speed via Ollama on <strong>llama3.1:8b</strong></span>
+  <span>Click any row to see compatible LLM models</span>
 </div>
 
 <div class="table-wrap">
@@ -248,7 +377,7 @@
         <th data-col="vram">VRAM <span class="sa">↕</span></th>
         <th style="min-width:130px"> </th>
         <th data-col="fit">LLM Fit <span class="sa">↕</span></th>
-        <th data-col="speed">Est. Speed <span class="sa">↕</span></th>
+        <th data-col="speed">Est. Speed (llama3.1:8b) <span class="sa">↕</span></th>
         <th>Notes</th>
       </tr>
     </thead>
@@ -439,6 +568,103 @@ const countEl = document.getElementById("count");
 const emptyEl = document.getElementById("empty");
 
 // ── Render ────────────────────────────────────────────────────────────────────
+// ── LLM model catalogue ───────────────────────────────────────────────────────
+// vram: minimum VRAM needed (GB), systemRam: needs RAM offload beyond this
+// speed: tokens/sec tier label, quality: label
+const LLM_MODELS = [
+  { name:"llama3.2:1b",    vram:1,  systemRam:0,  speed:"~1–2s",  quality:"Basic",     personality:"Very fast; limited coherence. Good for testing only.",          pull:"ollama pull llama3.2:1b" },
+  { name:"llama3.2:3b",    vram:2,  systemRam:0,  speed:"~2–4s",  quality:"Good",      personality:"Fast and fun. Best choice when VRAM is tight.",                  pull:"ollama pull llama3.2:3b" },
+  { name:"phi3:mini",      vram:2,  systemRam:0,  speed:"~2–4s",  quality:"Good",      personality:"Microsoft's compact model. Punchy, follows character well.",      pull:"ollama pull phi3:mini" },
+  { name:"gemma2:2b",      vram:2,  systemRam:0,  speed:"~2–4s",  quality:"Good",      personality:"Google's compact model; solid instruction following.",            pull:"ollama pull gemma2:2b" },
+  { name:"llama3.1:8b",    vram:6,  systemRam:0,  speed:"~5–8s",  quality:"Better",    personality:"Reliable, great in-character responses. Recommended starting point.", pull:"ollama pull llama3.1:8b", recommended:true },
+  { name:"mistral:7b",     vram:5,  systemRam:0,  speed:"~5–8s",  quality:"Better",    personality:"Creative and varied. Sometimes ignores strict rules — more 'unhinged'.", pull:"ollama pull mistral:7b" },
+  { name:"gemma2:9b",      vram:6,  systemRam:0,  speed:"~6–10s", quality:"Better",    personality:"Strong instruction following; good at staying in character.",      pull:"ollama pull gemma2:9b" },
+  { name:"llava:7b",       vram:6,  systemRam:0,  speed:"~6–10s", quality:"Better",    personality:"Multimodal (image + text). Can describe viewer screenshots.",       pull:"ollama pull llava:7b" },
+  { name:"qwen2.5:7b",     vram:5,  systemRam:0,  speed:"~5–8s",  quality:"Better",    personality:"Very instruction-following; great for tight character control.",    pull:"ollama pull qwen2.5:7b" },
+  { name:"qwen2.5:14b",    vram:10, systemRam:0,  speed:"~8–12s", quality:"Very Good", personality:"Best instruction following in the 10–14B range. Recommended for tighter personas.", pull:"ollama pull qwen2.5:14b" },
+  { name:"mistral-nemo",   vram:8,  systemRam:0,  speed:"~7–11s", quality:"Very Good", personality:"12B model; great balance of speed and quality.",                   pull:"ollama pull mistral-nemo" },
+  { name:"llama3.1:70b",   vram:40, systemRam:40, speed:"~15–25s",quality:"Best",      personality:"Smartest responses; needs VRAM + RAM offload on most cards.",       pull:"ollama pull llama3.1:70b" },
+  { name:"qwen2.5:32b",    vram:20, systemRam:0,  speed:"~12–18s",quality:"Great",     personality:"Excellent quality; fits in VRAM on high-end cards.",               pull:"ollama pull qwen2.5:32b" },
+  { name:"mixtral:8x7b",   vram:26, systemRam:0,  speed:"~14–20s",quality:"Great",     personality:"MoE architecture; very creative and varied responses.",            pull:"ollama pull mixtral:8x7b" },
+  { name:"llama3.1:405b",  vram:230,systemRam:200,speed:"~60s+",  quality:"Max",       personality:"Largest available model. Requires multiple high-end datacenter GPUs.", pull:"ollama pull llama3.1:405b" },
+];
+
+function buildDetailPanel(g) {
+  const colCount = 9; // number of table columns
+  const fitsInVram     = LLM_MODELS.filter(m => m.vram <= g.vram && m.systemRam === 0);
+  const needsOffload   = LLM_MODELS.filter(m => m.vram > g.vram && (m.vram - g.vram) <= 64 && m.systemRam > 0);
+  const tooLarge       = LLM_MODELS.filter(m => !fitsInVram.includes(m) && !needsOffload.includes(m));
+
+  function modelRow(m, mode) {
+    const tag = m.recommended ? `<span class="model-tag tag-rec">★ Rec</span>` :
+                mode === "offload" ? `<span class="model-tag tag-sys">RAM+</span>` : "";
+    const warnStyle = mode === "toolarge" ? "opacity:.45" : "";
+    return `<tr style="${warnStyle}">
+      <td><span class="model-name">${m.name}</span>${tag}</td>
+      <td><span class="model-vram">${m.vram} GB VRAM${m.systemRam > 0 ? ` + ~${m.systemRam} GB RAM` : ""}</span></td>
+      <td><span class="model-speed">${m.speed}</span></td>
+      <td><span class="model-quality">${m.quality}</span></td>
+      <td style="max-width:240px;white-space:normal;font-size:12px;color:var(--muted);line-height:1.4">${m.personality}</td>
+      <td><span class="model-pull" onclick="copyPull(this,'${m.pull}')">${m.pull}</span></td>
+    </tr>`;
+  }
+
+  let rows = fitsInVram.map(m => modelRow(m, "fits")).join("");
+
+  let offloadSection = "";
+  if (needsOffload.length > 0) {
+    offloadSection = `
+      <tr><td colspan="6" style="padding:8px 12px 4px;background:rgba(245,158,11,.05)">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#f59e0b">
+          ⚡ Requires RAM offload — slower but works
+        </span>
+      </td></tr>
+      ${needsOffload.map(m => modelRow(m, "offload")).join("")}`;
+  }
+
+  const mfrNote = g.mfr === "intel"
+    ? `<div class="offload-note">⚠ Intel cards use <strong>IPEX-LLM</strong> via the <code>spaceinvaderone/ollama-intel-gpu</code> Docker image. Speed estimates are approximate — SYCL kernel compilation adds ~2–5 min on first model load.</div>`
+    : "";
+
+  return `<tr class="detail-row">
+    <td colspan="${colCount}">
+      <div class="detail-panel">
+        <div class="detail-header">
+          <span class="detail-gpu-name">${g.name}</span>
+          <span class="detail-meta">${g.vram} GB VRAM · ${g.arch} · ${g.mfr === "nvidia" ? "NVIDIA" : "Intel"}</span>
+        </div>
+        <div class="detail-note">${g.note}</div>
+        ${mfrNote}
+        <table class="model-table">
+          <thead>
+            <tr>
+              <th>Model</th>
+              <th>VRAM needed</th>
+              <th>Est. speed (llama3.1:8b)</th>
+              <th>Quality</th>
+              <th>Personality notes</th>
+              <th>Pull command</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+            ${offloadSection}
+          </tbody>
+        </table>
+        <div class="detail-footer">Click any pull command to copy · All "Est. speed" values are for <strong>llama3.1:8b</strong> on this GPU · Actual speeds vary by prompt length and system load</div>
+      </div>
+    </td>
+  </tr>`;
+}
+
+function copyPull(el, cmd) {
+  navigator.clipboard.writeText(cmd).then(() => {
+    el.textContent = "✓ copied!";
+    el.classList.add("copied");
+    setTimeout(() => { el.textContent = cmd; el.classList.remove("copied"); }, 1800);
+  });
+}
+
 function renderRows(data) {
   tbody.innerHTML = "";
   data.forEach(g => {
@@ -451,7 +677,7 @@ function renderRows(data) {
     tr.dataset.arch = aSlug;
     tr.dataset.name = g.name.toLowerCase();
     tr.innerHTML = `
-      <td><span class="gpu-name">${g.name}</span></td>
+      <td><span class="gpu-name">${g.name}</span><span class="chevron">▶</span></td>
       <td><span class="mfr-dot mfr-${g.mfr}"></span><span style="font-size:12px;color:var(--dim);font-family:'JetBrains Mono',monospace">${g.mfr === "nvidia" ? "NVIDIA" : "Intel"}</span></td>
       <td><span class="cat-badge cat-${catKey}">${CAT_LABEL[catKey] || g.cat}</span></td>
       <td><span class="badge b-${aSlug}">${g.arch}</span></td>
@@ -461,22 +687,55 @@ function renderRows(data) {
       <td><span class="speed">${speedLabel(g.speedRank)}</span></td>
       <td><span class="note">${g.note}</span></td>
     `;
+
+    // insert detail row immediately after
+    const detailTr = document.createElement("tr");
+    detailTr.classList.add("detail-row", "hidden");
+    detailTr.innerHTML = `<td colspan="9"></td>`; // placeholder; filled on first open
+
+    tr.addEventListener("click", () => {
+      const isOpen = tr.classList.contains("expanded");
+      // close any other open rows
+      tbody.querySelectorAll("tr.expanded").forEach(r => {
+        r.classList.remove("expanded");
+        r.nextElementSibling?.classList.add("hidden");
+      });
+      if (!isOpen) {
+        tr.classList.add("expanded");
+        // lazy-render detail panel
+        if (!detailTr.dataset.rendered) {
+          detailTr.innerHTML = buildDetailPanel(g);
+          detailTr.dataset.rendered = "1";
+        }
+        detailTr.classList.remove("hidden");
+        // scroll into view smoothly
+        setTimeout(() => detailTr.scrollIntoView({ behavior: "smooth", block: "nearest" }), 50);
+      }
+    });
+
     tbody.appendChild(tr);
+    tbody.appendChild(detailTr);
   });
 }
 
 // ── Filter ────────────────────────────────────────────────────────────────────
 function applyFilters() {
   const query = document.getElementById("search").value.trim().toLowerCase();
-  const rows  = Array.from(tbody.querySelectorAll("tr"));
+  const rows  = Array.from(tbody.querySelectorAll("tr:not(.detail-row)"));
   let visible = 0;
   rows.forEach(row => {
     const mfrOk  = activeMfr  === "all" || row.dataset.mfr  === activeMfr;
     const catOk  = activeCat  === "all" || row.dataset.cat  === activeCat || (activeCat === "consumer" && row.dataset.cat === "geforce");
     const archOk = activeArch === "all" || row.dataset.arch === activeArch;
     const txtOk  = !query || row.dataset.name.includes(query) || row.dataset.arch.includes(query) || row.dataset.mfr.includes(query);
-    if (mfrOk && catOk && archOk && txtOk) { row.classList.remove("hidden"); visible++; }
-    else row.classList.add("hidden");
+    const show = mfrOk && catOk && archOk && txtOk;
+    row.classList.toggle("hidden", !show);
+    // also hide the paired detail row when main row is hidden
+    const detail = row.nextElementSibling;
+    if (detail?.classList.contains("detail-row")) {
+      if (!show) { detail.classList.add("hidden"); row.classList.remove("expanded"); }
+    }
+    if (show) visible++;
   });
   countEl.textContent = visible;
   emptyEl.classList.toggle("visible", visible === 0);
