@@ -38,6 +38,12 @@
     --in-xehp:       #8b5cf6;
     --in-gaudi:      #7c5cbf;
     --in-celestial:  #22d3ee;
+
+    /* AMD arch colours */
+    --am-rdna2:   #ed6b06;
+    --am-rdna3:   #e53935;
+    --am-rdna4:   #ff6f61;
+    --am-cdna:    #b71c1c;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -59,8 +65,10 @@
   input[type="search"]::-webkit-search-cancel-button { display: none; }
 
   /* ── Filter rows ── */
-  .filter-section { padding: 12px 32px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; }
-  .filter-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .filter-section { padding: 0 32px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; }
+  .filter-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .filter-row:last-child { border-bottom: none; }
+  .arch-row { border-bottom: none; } /* arch row is always visually last */
   .filter-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); min-width: 88px; }
 
   /* base pill */
@@ -72,6 +80,7 @@
   .pill[data-mfr="all"].active      { background: var(--dim); }
   .pill[data-mfr="nvidia"].active   { background: #76c442; }
   .pill[data-mfr="intel"].active    { background: #0096d6; }
+  .pill[data-mfr="amd"].active      { background: #ed6b06; }
 
   /* category pills */
   .pill[data-cat="all"].active         { background: var(--dim); }
@@ -92,6 +101,11 @@
   .pill[data-arch="xe-hp"].active      { background: var(--in-xehp); }
   .pill[data-arch="gaudi"].active      { background: var(--in-gaudi); color: #fff; }
   .pill[data-arch="celestial"].active  { background: var(--in-celestial); }
+  /* arch pills — AMD */
+  .pill[data-arch="rdna2"].active  { background: var(--am-rdna2); }
+  .pill[data-arch="rdna3"].active  { background: var(--am-rdna3); }
+  .pill[data-arch="rdna4"].active  { background: var(--am-rdna4); }
+  .pill[data-arch="cdna"].active   { background: var(--am-cdna); color: #fff; }
   .pill[data-arch="all"].active        { background: var(--dim); }
 
   /* ── Stats bar ── */
@@ -257,11 +271,17 @@
   .b-xe-hp      { background: rgba(139,92,246,.15);  color: var(--in-xehp); }
   .b-gaudi      { background: rgba(124,92,191,.15);  color: #a78fe0; }
   .b-celestial  { background: rgba(34,211,238,.15);  color: var(--in-celestial); }
+  /* AMD arch badges */
+  .b-rdna2 { background: rgba(237,107,6,.15);  color: var(--am-rdna2); }
+  .b-rdna3 { background: rgba(229,57,53,.15);  color: var(--am-rdna3); }
+  .b-rdna4 { background: rgba(255,111,97,.15); color: var(--am-rdna4); }
+  .b-cdna  { background: rgba(183,28,28,.15);  color: #ef9a9a; }
 
   /* manufacturer dot */
   .mfr-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
   .mfr-nvidia { background: #76c442; }
   .mfr-intel  { background: #0096d6; }
+  .mfr-amd    { background: #ed6b06; }
 
   /* category badge */
   .cat-badge { border-radius: 4px; display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; padding: 2px 7px; }
@@ -612,6 +632,7 @@
     <div class="pill active" data-mfr="all">All</div>
     <div class="pill" data-mfr="nvidia">NVIDIA</div>
     <div class="pill" data-mfr="intel">Intel</div>
+    <div class="pill" data-mfr="amd">AMD</div>
   </div>
 
   <!-- Row 2: Category -->
@@ -624,7 +645,29 @@
   </div>
 
   <!-- Row 3: Architecture — switches content based on vendor selection -->
-  <div class="filter-row arch-row" id="arch-row-nvidia">
+  <div class="filter-row arch-row" id="arch-row-all">
+    <span class="filter-label">Arch</span>
+    <div class="pill active" data-arch="all">All</div>
+    <!-- NVIDIA -->
+    <div class="pill" data-arch="turing">Turing</div>
+    <div class="pill" data-arch="ampere">Ampere</div>
+    <div class="pill" data-arch="ada">Ada Lovelace</div>
+    <div class="pill" data-arch="hopper">Hopper</div>
+    <div class="pill" data-arch="blackwell">Blackwell</div>
+    <!-- Intel -->
+    <div class="pill" data-arch="alchemist">Alchemist</div>
+    <div class="pill" data-arch="battlemage">Battlemage</div>
+    <div class="pill" data-arch="xe-hp">Xe-HP</div>
+    <div class="pill" data-arch="gaudi">Gaudi</div>
+    <div class="pill" data-arch="celestial">Celestial ↗</div>
+    <!-- AMD -->
+    <div class="pill" data-arch="rdna2">RDNA 2</div>
+    <div class="pill" data-arch="rdna3">RDNA 3</div>
+    <div class="pill" data-arch="rdna4">RDNA 4</div>
+    <div class="pill" data-arch="cdna">CDNA</div>
+  </div>
+
+  <div class="filter-row arch-row hidden-row" id="arch-row-nvidia">
     <span class="filter-label">Arch</span>
     <div class="pill active" data-arch="all">All</div>
     <div class="pill" data-arch="turing">Turing</div>
@@ -642,6 +685,15 @@
     <div class="pill" data-arch="xe-hp">Xe-HP / Ponte Vecchio</div>
     <div class="pill" data-arch="gaudi">Gaudi</div>
     <div class="pill" data-arch="celestial">Celestial (Xe3) ↗</div>
+  </div>
+
+  <div class="filter-row arch-row hidden-row" id="arch-row-amd">
+    <span class="filter-label">Arch</span>
+    <div class="pill active" data-arch="all">All</div>
+    <div class="pill" data-arch="rdna2">RDNA 2</div>
+    <div class="pill" data-arch="rdna3">RDNA 3</div>
+    <div class="pill" data-arch="rdna4">RDNA 4</div>
+    <div class="pill" data-arch="cdna">CDNA (Instinct)</div>
   </div>
 
 </div>
@@ -832,6 +884,56 @@ const GPUS = [
 
   // Intel — Datacenter Celestial (upcoming)
   {mfr:"intel", name:"Crescent Island (Xe3)", cat:"datacenter",  arch:"Celestial", vram:160, speedRank:1,  fit:"great", note:"LPDDR5X; 160 GB; Xe3P; sampling H2 2026"},
+
+  // ══════════════════════════════════
+  // AMD — Consumer RDNA 2 (RX 6000)
+  // ══════════════════════════════════
+  {mfr:"amd", name:"RX 6400",        cat:"consumer", arch:"RDNA2", vram:4,  speedRank:12, fit:"low",   note:"4 GB — most LLMs won't load; entry only"},
+  {mfr:"amd", name:"RX 6500 XT",     cat:"consumer", arch:"RDNA2", vram:4,  speedRank:11, fit:"low",   note:"4 GB; PCIe 4.0 x4; very limited for LLM"},
+  {mfr:"amd", name:"RX 6600",        cat:"consumer", arch:"RDNA2", vram:8,  speedRank:9,  fit:"ok",    note:"8 GB GDDR6; 28 CUs; solid 7B card"},
+  {mfr:"amd", name:"RX 6600 XT",     cat:"consumer", arch:"RDNA2", vram:8,  speedRank:9,  fit:"ok",    note:"8 GB GDDR6; faster than 6600; 7B models"},
+  {mfr:"amd", name:"RX 6650 XT",     cat:"consumer", arch:"RDNA2", vram:8,  speedRank:8,  fit:"ok",    note:"8 GB; faster memory than 6600 XT"},
+  {mfr:"amd", name:"RX 6700",        cat:"consumer", arch:"RDNA2", vram:10, speedRank:7,  fit:"good",  note:"10 GB GDDR6; good 7B–13B headroom"},
+  {mfr:"amd", name:"RX 6700 XT",     cat:"consumer", arch:"RDNA2", vram:12, speedRank:7,  fit:"good",  note:"12 GB GDDR6; strong mid-range RDNA 2"},
+  {mfr:"amd", name:"RX 6750 XT",     cat:"consumer", arch:"RDNA2", vram:12, speedRank:6,  fit:"good",  note:"12 GB; faster memory than 6700 XT"},
+  {mfr:"amd", name:"RX 6800",        cat:"consumer", arch:"RDNA2", vram:16, speedRank:5,  fit:"great", note:"16 GB GDDR6; 60 CUs; great LLM value"},
+  {mfr:"amd", name:"RX 6800 XT",     cat:"consumer", arch:"RDNA2", vram:16, speedRank:5,  fit:"great", note:"16 GB GDDR6; 72 CUs; top mid-tier RDNA 2"},
+  {mfr:"amd", name:"RX 6900 XT",     cat:"consumer", arch:"RDNA2", vram:16, speedRank:4,  fit:"great", note:"16 GB; 80 CUs; flagship RDNA 2 consumer"},
+  {mfr:"amd", name:"RX 6950 XT",     cat:"consumer", arch:"RDNA2", vram:16, speedRank:4,  fit:"great", note:"16 GB; fastest RDNA 2 consumer card"},
+
+  // AMD — Consumer RDNA 3 (RX 7000)
+  {mfr:"amd", name:"RX 7400",        cat:"consumer", arch:"RDNA3", vram:4,  speedRank:11, fit:"low",   note:"4 GB GDDR6; entry RDNA 3; very limited"},
+  {mfr:"amd", name:"RX 7600",        cat:"consumer", arch:"RDNA3", vram:8,  speedRank:8,  fit:"ok",    note:"8 GB GDDR6; 32 CUs; solid 7B card"},
+  {mfr:"amd", name:"RX 7600 XT",     cat:"consumer", arch:"RDNA3", vram:16, speedRank:7,  fit:"great", note:"16 GB GDDR6; excellent VRAM for the price"},
+  {mfr:"amd", name:"RX 7700 XT",     cat:"consumer", arch:"RDNA3", vram:12, speedRank:6,  fit:"good",  note:"12 GB GDDR6; 54 CUs; good 13B headroom"},
+  {mfr:"amd", name:"RX 7800 XT",     cat:"consumer", arch:"RDNA3", vram:16, speedRank:5,  fit:"great", note:"16 GB GDDR6; 60 CUs; recommended RDNA 3"},
+  {mfr:"amd", name:"RX 7900 GRE",    cat:"consumer", arch:"RDNA3", vram:16, speedRank:4,  fit:"great", note:"16 GB GDDR6; 80 CUs; strong perf/value"},
+  {mfr:"amd", name:"RX 7900 XT",     cat:"consumer", arch:"RDNA3", vram:20, speedRank:3,  fit:"great", note:"20 GB GDDR6; 84 CUs; top mid-tier RDNA 3"},
+  {mfr:"amd", name:"RX 7900 XTX",    cat:"consumer", arch:"RDNA3", vram:24, speedRank:3,  fit:"great", note:"24 GB GDDR6; 96 CUs; flagship RDNA 3"},
+
+  // AMD — Consumer RDNA 4 (RX 9000)
+  {mfr:"amd", name:"RX 9060 (8 GB)",    cat:"consumer", arch:"RDNA4", vram:8,  speedRank:7,  fit:"ok",    note:"8 GB GDDR6; 32 CUs; Navi 44; 1080p entry"},
+  {mfr:"amd", name:"RX 9060 XT (8 GB)", cat:"consumer", arch:"RDNA4", vram:8,  speedRank:6,  fit:"ok",    note:"8 GB; 32 CUs; $299; faster than 9060"},
+  {mfr:"amd", name:"RX 9060 XT (16 GB)",cat:"consumer", arch:"RDNA4", vram:16, speedRank:6,  fit:"great", note:"16 GB; 32 CUs; $349; best value RDNA 4 LLM"},
+  {mfr:"amd", name:"RX 9070",           cat:"consumer", arch:"RDNA4", vram:16, speedRank:4,  fit:"great", note:"16 GB GDDR6; 56 CUs; Navi 48; ~RTX 5070 class"},
+  {mfr:"amd", name:"RX 9070 GRE",       cat:"consumer", arch:"RDNA4", vram:12, speedRank:5,  fit:"good",  note:"12 GB; 48 CUs; China market; between 9060 XT and 9070"},
+  {mfr:"amd", name:"RX 9070 XT",        cat:"consumer", arch:"RDNA4", vram:16, speedRank:3,  fit:"great", note:"16 GB GDDR6; 64 CUs; Navi 48; flagship RDNA 4 consumer"},
+
+  // AMD — Workstation RDNA 2 (Radeon Pro W6000)
+  {mfr:"amd", name:"Radeon Pro W6600",  cat:"workstation", arch:"RDNA2", vram:8,  speedRank:9, fit:"ok",    note:"8 GB ECC GDDR6; 28 CUs; single-slot; 100 W"},
+  {mfr:"amd", name:"Radeon Pro W6800",  cat:"workstation", arch:"RDNA2", vram:32, speedRank:5, fit:"great", note:"32 GB ECC GDDR6; 60 CUs; 250 W; strong 34B"},
+
+  // AMD — Workstation RDNA 3 (Radeon Pro W7000)
+  {mfr:"amd", name:"Radeon Pro W7800",  cat:"workstation", arch:"RDNA3", vram:32, speedRank:4, fit:"great", note:"32 GB ECC GDDR6; 70 CUs; 260 W; dual-slot"},
+  {mfr:"amd", name:"Radeon Pro W7900",  cat:"workstation", arch:"RDNA3", vram:48, speedRank:3, fit:"great", note:"48 GB ECC GDDR6; 96 CUs; 295 W; top RDNA 3 WS"},
+
+  // AMD — Datacenter CDNA (Instinct MI-series)
+  {mfr:"amd", name:"Instinct MI250",    cat:"datacenter", arch:"CDNA", vram:128, speedRank:4, fit:"great", note:"HBM2e; 128 GB; 2×64 CU chiplet; 560 W OAM"},
+  {mfr:"amd", name:"Instinct MI250X",   cat:"datacenter", arch:"CDNA", vram:128, speedRank:3, fit:"great", note:"HBM2e; 128 GB; 2.45 TB/s; top CDNA 2"},
+  {mfr:"amd", name:"Instinct MI300X",   cat:"datacenter", arch:"CDNA", vram:192, speedRank:2, fit:"great", note:"HBM3; 192 GB; 5.3 TB/s; CDNA 3; top LLM card"},
+  {mfr:"amd", name:"Instinct MI325X",   cat:"datacenter", arch:"CDNA", vram:256, speedRank:2, fit:"great", note:"HBM3e; 256 GB; 6.0 TB/s; MI300X refresh"},
+  {mfr:"amd", name:"Instinct MI350X",   cat:"datacenter", arch:"CDNA", vram:288, speedRank:1, fit:"great", note:"HBM3e; 288 GB; CDNA 4; 3nm; launched 2025"},
+  {mfr:"amd", name:"Instinct MI355X",   cat:"datacenter", arch:"CDNA", vram:288, speedRank:1, fit:"great", note:"HBM3e; 288 GB; faster MI350X variant; 74 PFLOPS FP4"},
 ];
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -931,6 +1033,8 @@ function buildDetailPanel(g) {
 
   const mfrNote = g.mfr === "intel"
     ? `<div class="offload-note">⚠ Intel cards use <strong>IPEX-LLM</strong> via the <code>spaceinvaderone/ollama-intel-gpu</code> Docker image. Speed estimates are approximate — SYCL kernel compilation adds ~2–5 min on first model load.</div>`
+    : g.mfr === "amd"
+    ? `<div class="offload-note">⚠ AMD GPUs use Ollama with ROCm. Ensure you use the <code>ollama/ollama:rocm</code> Docker image and that ROCm drivers are installed on your host. Speed estimates are approximate and depend on ROCm driver maturity.</div>`
     : "";
 
   return `<tr class="detail-row">
@@ -989,7 +1093,7 @@ function renderRows(data) {
         <span class="chevron">▶</span>
         <button class="cmp-btn" title="Add to comparison" onclick="toggleCompare(event, '${g.name}')">+</button>
       </td>
-      <td><span class="mfr-dot mfr-${g.mfr}"></span><span style="font-size:12px;color:var(--dim);font-family:'JetBrains Mono',monospace">${g.mfr === "nvidia" ? "NVIDIA" : "Intel"}</span></td>
+      <td><span class="mfr-dot mfr-${g.mfr}"></span><span style="font-size:12px;color:var(--dim);font-family:'JetBrains Mono',monospace">${g.mfr === "nvidia" ? "NVIDIA" : g.mfr === "intel" ? "Intel" : "AMD"}</span></td>
       <td><span class="cat-badge cat-${catKey}">${CAT_LABEL[catKey] || g.cat}</span></td>
       <td><span class="badge b-${aSlug}">${g.arch}</span></td>
       <td><span class="vram" style="color:${vramColor(g.vram)}">${g.vram} GB</span></td>
@@ -1071,20 +1175,18 @@ function applySort() {
 
 // ── Arch row switcher ─────────────────────────────────────────────────────────
 function updateArchRow() {
-  const nvRow = document.getElementById("arch-row-nvidia");
-  const inRow = document.getElementById("arch-row-intel");
-  if (activeMfr === "intel") {
-    nvRow.classList.add("hidden-row");
-    inRow.classList.remove("hidden-row");
-  } else if (activeMfr === "nvidia") {
-    inRow.classList.add("hidden-row");
-    nvRow.classList.remove("hidden-row");
-  } else {
-    // both hidden when "all" — show nvidia row as default
-    nvRow.classList.remove("hidden-row");
-    inRow.classList.add("hidden-row");
-  }
-  // reset arch filter when switching vendor
+  const allRow = document.getElementById("arch-row-all");
+  const nvRow  = document.getElementById("arch-row-nvidia");
+  const inRow  = document.getElementById("arch-row-intel");
+  const amdRow = document.getElementById("arch-row-amd");
+  // hide all first
+  [allRow, nvRow, inRow, amdRow].forEach(r => r.classList.add("hidden-row"));
+  // show the correct one
+  if      (activeMfr === "nvidia") nvRow.classList.remove("hidden-row");
+  else if (activeMfr === "intel")  inRow.classList.remove("hidden-row");
+  else if (activeMfr === "amd")    amdRow.classList.remove("hidden-row");
+  else                             allRow.classList.remove("hidden-row"); // "all"
+  // reset arch filter
   activeArch = "all";
   document.querySelectorAll(".pill[data-arch]").forEach(p => p.classList.toggle("active", p.dataset.arch === "all"));
 }
@@ -1262,7 +1364,7 @@ function openCompareModal() {
           <span class="mfr-dot mfr-${g.mfr}" style="margin-right:8px"></span>${g.name}
         </div>
         <div class="cmp-gpu-meta">
-          <span>${g.mfr === "nvidia" ? "NVIDIA" : "Intel"}</span>
+          <span>${g.mfr === "nvidia" ? "NVIDIA" : g.mfr === "intel" ? "Intel" : "AMD"}</span>
           <span>·</span>
           <span>${g.arch}</span>
           <span>·</span>
