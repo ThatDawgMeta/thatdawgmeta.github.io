@@ -16,7 +16,6 @@
     --muted:   #4a5878;
     --dim:     #7890b0;
 
-    /* manufacturer accent — changes dynamically via JS */
     --accent:  #76c442;
     --accent2: #4ade80;
 
@@ -52,7 +51,7 @@
   /* ── Header ── */
   header { border-bottom: 1px solid var(--border); padding: 24px 32px 20px; display: flex; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
   .header-title { flex: 1; min-width: 200px; }
-  .logo { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: var(--accent); letter-spacing: .15em; text-transform: uppercase; margin-bottom: 6px; transition: color .3s; }
+  .logo { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: var(--accent); letter-spacing: .15em; text-transform: uppercase; margin-bottom: 6px; }
   h1 { font-size: 22px; font-weight: 600; letter-spacing: -.02em; }
   h1 span { color: var(--muted); font-weight: 300; }
 
@@ -77,13 +76,11 @@
   .pill.active { color: #0a0c12; font-weight: 700; border-color: transparent; }
 
   /* manufacturer pills */
-  .pill[data-mfr="all"].active      { background: var(--dim); }
   .pill[data-mfr="nvidia"].active   { background: #76c442; }
   .pill[data-mfr="intel"].active    { background: #0096d6; }
   .pill[data-mfr="amd"].active      { background: #ed6b06; }
 
   /* category pills */
-  .pill[data-cat="all"].active         { background: var(--dim); }
   .pill[data-cat="consumer"].active    { background: var(--cgf); }
   .pill[data-cat="geforce"].active     { background: var(--cgf); }
   .pill[data-cat="workstation"].active { background: var(--cws); }
@@ -106,7 +103,6 @@
   .pill[data-arch="rdna3"].active  { background: var(--am-rdna3); }
   .pill[data-arch="rdna4"].active  { background: var(--am-rdna4); }
   .pill[data-arch="cdna"].active   { background: var(--am-cdna); color: #fff; }
-  .pill[data-arch="all"].active        { background: var(--dim); }
 
   /* ── Stats bar ── */
   .stats { padding: 10px 32px; border-bottom: 1px solid var(--border); display: flex; gap: 20px; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); flex-wrap: wrap; }
@@ -218,7 +214,6 @@
   }
   .tag-rec  { background: rgba(118,196,66,.18); color: #76c442; }
   .tag-sys  { background: rgba(245,158,11,.15); color: #f59e0b; }
-  .tag-warn { background: rgba(248,113,113,.15); color: #f87171; }
 
   .model-vram { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--dim); }
   .model-speed { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--dim); }
@@ -615,8 +610,8 @@
 
 <header>
   <div class="header-title">
-    <div class="logo" id="logo-text">🐾 Stream AI Pet</div>
-    <h1>GPU Reference <span id="h1-sub">— NVIDIA &amp; Intel</span></h1>
+    <div class="logo">🐾 Stream AI Pet</div>
+    <h1>GPU Reference <span>— NVIDIA, Intel &amp; AMD</span></h1>
   </div>
   <div class="search-wrap">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -629,16 +624,15 @@
   <!-- Row 1: Manufacturer -->
   <div class="filter-row">
     <span class="filter-label">Vendor</span>
-    <div class="pill active" data-mfr="all">All</div>
     <div class="pill" data-mfr="nvidia">NVIDIA</div>
     <div class="pill" data-mfr="intel">Intel</div>
     <div class="pill" data-mfr="amd">AMD</div>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-left:4px">— select one or more · deselect all to show everything</span>
   </div>
 
   <!-- Row 2: Category -->
   <div class="filter-row">
     <span class="filter-label">Category</span>
-    <div class="pill active" data-cat="all">All</div>
     <div class="pill" data-cat="consumer">Consumer</div>
     <div class="pill" data-cat="workstation">Workstation</div>
     <div class="pill" data-cat="datacenter">Datacenter</div>
@@ -647,29 +641,27 @@
   <!-- Row 3: Architecture — switches content based on vendor selection -->
   <div class="filter-row arch-row" id="arch-row-all">
     <span class="filter-label">Arch</span>
-    <div class="pill active" data-arch="all">All</div>
     <!-- NVIDIA -->
-    <div class="pill" data-arch="turing">Turing</div>
-    <div class="pill" data-arch="ampere">Ampere</div>
-    <div class="pill" data-arch="ada">Ada Lovelace</div>
-    <div class="pill" data-arch="hopper">Hopper</div>
-    <div class="pill" data-arch="blackwell">Blackwell</div>
+    <div class="pill" data-arch="turing"    data-vendor="nvidia">Turing</div>
+    <div class="pill" data-arch="ampere"    data-vendor="nvidia">Ampere</div>
+    <div class="pill" data-arch="ada"       data-vendor="nvidia">Ada Lovelace</div>
+    <div class="pill" data-arch="hopper"    data-vendor="nvidia">Hopper</div>
+    <div class="pill" data-arch="blackwell" data-vendor="nvidia">Blackwell</div>
     <!-- Intel -->
-    <div class="pill" data-arch="alchemist">Alchemist</div>
-    <div class="pill" data-arch="battlemage">Battlemage</div>
-    <div class="pill" data-arch="xe-hp">Xe-HP</div>
-    <div class="pill" data-arch="gaudi">Gaudi</div>
-    <div class="pill" data-arch="celestial">Celestial ↗</div>
+    <div class="pill" data-arch="alchemist"  data-vendor="intel">Alchemist</div>
+    <div class="pill" data-arch="battlemage" data-vendor="intel">Battlemage</div>
+    <div class="pill" data-arch="xe-hp"      data-vendor="intel">Xe-HP</div>
+    <div class="pill" data-arch="gaudi"      data-vendor="intel">Gaudi</div>
+    <div class="pill" data-arch="celestial"  data-vendor="intel">Celestial ↗</div>
     <!-- AMD -->
-    <div class="pill" data-arch="rdna2">RDNA 2</div>
-    <div class="pill" data-arch="rdna3">RDNA 3</div>
-    <div class="pill" data-arch="rdna4">RDNA 4</div>
-    <div class="pill" data-arch="cdna">CDNA</div>
+    <div class="pill" data-arch="rdna2" data-vendor="amd">RDNA 2</div>
+    <div class="pill" data-arch="rdna3" data-vendor="amd">RDNA 3</div>
+    <div class="pill" data-arch="rdna4" data-vendor="amd">RDNA 4</div>
+    <div class="pill" data-arch="cdna"  data-vendor="amd">CDNA</div>
   </div>
 
   <div class="filter-row arch-row hidden-row" id="arch-row-nvidia">
     <span class="filter-label">Arch</span>
-    <div class="pill active" data-arch="all">All</div>
     <div class="pill" data-arch="turing">Turing</div>
     <div class="pill" data-arch="ampere">Ampere</div>
     <div class="pill" data-arch="ada">Ada Lovelace</div>
@@ -679,7 +671,6 @@
 
   <div class="filter-row arch-row hidden-row" id="arch-row-intel">
     <span class="filter-label">Arch</span>
-    <div class="pill active" data-arch="all">All</div>
     <div class="pill" data-arch="alchemist">Alchemist (Xe)</div>
     <div class="pill" data-arch="battlemage">Battlemage (Xe2)</div>
     <div class="pill" data-arch="xe-hp">Xe-HP / Ponte Vecchio</div>
@@ -689,7 +680,6 @@
 
   <div class="filter-row arch-row hidden-row" id="arch-row-amd">
     <span class="filter-label">Arch</span>
-    <div class="pill active" data-arch="all">All</div>
     <div class="pill" data-arch="rdna2">RDNA 2</div>
     <div class="pill" data-arch="rdna3">RDNA 3</div>
     <div class="pill" data-arch="rdna4">RDNA 4</div>
@@ -747,7 +737,7 @@
 
 <script>
 // ── Data ──────────────────────────────────────────────────────────────────────
-// mfr: nvidia | intel
+// mfr: nvidia | intel | amd
 // cat: geforce | consumer | workstation | datacenter
 // arch: exact string used for badge slug
 // vram: GB  speedRank: lower=faster  fit: great|good|ok|low
@@ -937,7 +927,7 @@ const GPUS = [
 ];
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
-const MAX_VRAM = 192;
+const MAX_VRAM = 288;
 const FIT_LABEL = {great:"✦ Great", good:"✓ Good", ok:"~ OK", low:"✗ Limited"};
 const FIT_CLASS = {great:"fit-great", good:"fit-good", ok:"fit-ok", low:"fit-low"};
 const CAT_LABEL = {geforce:"GeForce", consumer:"Consumer", workstation:"Workstation", datacenter:"Datacenter"};
@@ -965,9 +955,9 @@ function vramColor(gb) {
 }
 
 // ── State ─────────────────────────────────────────────────────────────────────
-let activeMfr  = "all";
-let activeCat  = "all";
-let activeArch = "all";
+let activeMfrs  = new Set(); // empty = show all
+let activeCats  = new Set(); // empty = show all
+let activeArchs = new Set(); // empty = show all
 let sortCol    = null;
 let sortAsc    = true;
 let currentData = [...GPUS];
@@ -1000,9 +990,8 @@ const LLM_MODELS = [
 
 function buildDetailPanel(g) {
   const colCount = 9; // number of table columns
-  const fitsInVram     = LLM_MODELS.filter(m => m.vram <= g.vram && m.systemRam === 0);
-  const needsOffload   = LLM_MODELS.filter(m => m.vram > g.vram && (m.vram - g.vram) <= 64 && m.systemRam > 0);
-  const tooLarge       = LLM_MODELS.filter(m => !fitsInVram.includes(m) && !needsOffload.includes(m));
+  const fitsInVram   = LLM_MODELS.filter(m => m.vram <= g.vram && m.systemRam === 0);
+  const needsOffload = LLM_MODELS.filter(m => m.vram > g.vram && (m.vram - g.vram) <= 64 && m.systemRam > 0);
 
   function modelRow(m, mode) {
     const tag = m.recommended ? `<span class="model-tag tag-rec">★ Rec</span>` :
@@ -1042,7 +1031,7 @@ function buildDetailPanel(g) {
       <div class="detail-panel">
         <div class="detail-header">
           <span class="detail-gpu-name">${g.name}</span>
-          <span class="detail-meta">${g.vram} GB VRAM · ${g.arch} · ${g.mfr === "nvidia" ? "NVIDIA" : "Intel"}</span>
+          <span class="detail-meta">${g.vram} GB VRAM · ${g.arch} · ${g.mfr === "nvidia" ? "NVIDIA" : g.mfr === "intel" ? "Intel" : "AMD"}</span>
         </div>
         <div class="detail-note">${g.note}</div>
         ${mfrNote}
@@ -1139,13 +1128,13 @@ function applyFilters() {
   const rows  = Array.from(tbody.querySelectorAll("tr:not(.detail-row)"));
   let visible = 0;
   rows.forEach(row => {
-    const mfrOk  = activeMfr  === "all" || row.dataset.mfr  === activeMfr;
-    const catOk  = activeCat  === "all" || row.dataset.cat  === activeCat || (activeCat === "consumer" && row.dataset.cat === "geforce");
-    const archOk = activeArch === "all" || row.dataset.arch === activeArch;
+    const mfrOk  = activeMfrs.size  === 0 || activeMfrs.has(row.dataset.mfr);
+    const catOk  = activeCats.size  === 0 || activeCats.has(row.dataset.cat) ||
+                   (activeCats.has("consumer") && row.dataset.cat === "geforce");
+    const archOk = activeArchs.size === 0 || activeArchs.has(row.dataset.arch);
     const txtOk  = !query || row.dataset.name.includes(query) || row.dataset.arch.includes(query) || row.dataset.mfr.includes(query);
     const show = mfrOk && catOk && archOk && txtOk;
     row.classList.toggle("hidden", !show);
-    // also hide the paired detail row when main row is hidden
     const detail = row.nextElementSibling;
     if (detail?.classList.contains("detail-row")) {
       if (!show) { detail.classList.add("hidden"); row.classList.remove("expanded"); }
@@ -1174,55 +1163,111 @@ function applySort() {
 }
 
 // ── Arch row switcher ─────────────────────────────────────────────────────────
+
+// Map of which arch slugs belong to each vendor
+const VENDOR_ARCHS = {
+  nvidia: new Set(["turing","ampere","ada","hopper","blackwell"]),
+  intel:  new Set(["alchemist","battlemage","xe-hp","gaudi","celestial"]),
+  amd:    new Set(["rdna2","rdna3","rdna4","cdna"]),
+};
+
+function validArchsForActiveVendors() {
+  if (activeMfrs.size === 0) {
+    // no vendor filter = all archs valid
+    return new Set([...VENDOR_ARCHS.nvidia, ...VENDOR_ARCHS.intel, ...VENDOR_ARCHS.amd]);
+  }
+  const allowed = new Set();
+  activeMfrs.forEach(v => VENDOR_ARCHS[v]?.forEach(a => allowed.add(a)));
+  return allowed;
+}
+
 function updateArchRow() {
   const allRow = document.getElementById("arch-row-all");
   const nvRow  = document.getElementById("arch-row-nvidia");
   const inRow  = document.getElementById("arch-row-intel");
   const amdRow = document.getElementById("arch-row-amd");
-  // hide all first
+
   [allRow, nvRow, inRow, amdRow].forEach(r => r.classList.add("hidden-row"));
-  // show the correct one
-  if      (activeMfr === "nvidia") nvRow.classList.remove("hidden-row");
-  else if (activeMfr === "intel")  inRow.classList.remove("hidden-row");
-  else if (activeMfr === "amd")    amdRow.classList.remove("hidden-row");
-  else                             allRow.classList.remove("hidden-row"); // "all"
-  // reset arch filter
-  activeArch = "all";
-  document.querySelectorAll(".pill[data-arch]").forEach(p => p.classList.toggle("active", p.dataset.arch === "all"));
+
+  if (activeMfrs.size === 1) {
+    // single vendor: show its dedicated row (all pills in it are relevant)
+    const only = [...activeMfrs][0];
+    if      (only === "nvidia") nvRow.classList.remove("hidden-row");
+    else if (only === "intel")  inRow.classList.remove("hidden-row");
+    else if (only === "amd")    amdRow.classList.remove("hidden-row");
+  } else {
+    // 0 or 2+ vendors: show combined row, hiding pills for vendors not selected
+    allRow.classList.remove("hidden-row");
+    allRow.querySelectorAll(".pill[data-vendor]").forEach(p => {
+      const show = activeMfrs.size === 0 || activeMfrs.has(p.dataset.vendor);
+      p.style.display = show ? "" : "none";
+    });
+  }
+
+  // prune any arch selections that no longer belong to an active vendor
+  const allowed = validArchsForActiveVendors();
+  [...activeArchs].forEach(a => {
+    if (!allowed.has(a)) {
+      activeArchs.delete(a);
+      document.querySelectorAll(`.pill[data-arch="${a}"]`).forEach(p => p.classList.remove("active"));
+    }
+  });
 }
+
 
 // ── Event listeners ───────────────────────────────────────────────────────────
 document.getElementById("search").addEventListener("input", applyFilters);
 
 document.querySelectorAll(".pill[data-mfr]").forEach(pill => {
   pill.addEventListener("click", () => {
-    document.querySelectorAll(".pill[data-mfr]").forEach(p => p.classList.remove("active"));
-    pill.classList.add("active");
-    activeMfr = pill.dataset.mfr;
+    const val = pill.dataset.mfr;
+    if (activeMfrs.has(val)) {
+      activeMfrs.delete(val);
+      pill.classList.remove("active");
+    } else {
+      activeMfrs.add(val);
+      pill.classList.add("active");
+    }
     updateArchRow();
-    renderRows(currentData);
+    syncCmpButtons();
     applyFilters();
   });
 });
 
 document.querySelectorAll(".pill[data-cat]").forEach(pill => {
   pill.addEventListener("click", () => {
-    document.querySelectorAll(".pill[data-cat]").forEach(p => p.classList.remove("active"));
-    pill.classList.add("active");
-    activeCat = pill.dataset.cat;
+    const val = pill.dataset.cat;
+    if (activeCats.has(val)) {
+      activeCats.delete(val);
+      pill.classList.remove("active");
+    } else {
+      activeCats.add(val);
+      pill.classList.add("active");
+    }
     applyFilters();
   });
 });
 
-document.querySelectorAll(".pill[data-arch]").forEach(pill => {
-  pill.addEventListener("click", () => {
-    // only affect pills in the currently visible arch row
-    const visibleRow = document.querySelector(".arch-row:not(.hidden-row)");
-    visibleRow.querySelectorAll(".pill[data-arch]").forEach(p => p.classList.remove("active"));
+// Single delegated listener for arch pills — avoids duplicate fires from
+// pills with the same data-arch value existing in multiple hidden rows
+document.querySelector(".filter-section").addEventListener("click", e => {
+  const pill = e.target.closest(".pill[data-arch]");
+  if (!pill) return;
+  // only act if this pill is inside the currently visible arch row
+  const visibleRow = document.querySelector(".arch-row:not(.hidden-row)");
+  if (!visibleRow?.contains(pill)) return;
+  // also ignore pills hidden by vendor filtering
+  if (pill.style.display === "none") return;
+
+  const val = pill.dataset.arch;
+  if (activeArchs.has(val)) {
+    activeArchs.delete(val);
+    pill.classList.remove("active");
+  } else {
+    activeArchs.add(val);
     pill.classList.add("active");
-    activeArch = pill.dataset.arch;
-    applyFilters();
-  });
+  }
+  applyFilters();
 });
 
 document.querySelectorAll("thead th[data-col]").forEach(th => {
@@ -1338,8 +1383,14 @@ function openCompareModal() {
 
   function specClass(val, best, worst, higherIsBetter) {
     if (cols === 1) return "";
-    if (higherIsBetter) return val === best ? "cmp-best" : val === worst && best !== worst ? "cmp-worst" : "";
-    else return val === best ? "cmp-best" : val === worst && best !== worst ? "cmp-worst" : "";
+    const isBest  = higherIsBetter ? val === best  : val === best;
+    const isWorst = higherIsBetter ? val === worst : val === worst;
+    // for speed: lower speedRank = faster = better, so flip best/worst
+    const actualBest  = higherIsBetter ? best  : worst;
+    const actualWorst = higherIsBetter ? worst : best;
+    if (val === actualBest  && actualBest  !== actualWorst) return "cmp-best";
+    if (val === actualWorst && actualBest  !== actualWorst) return "cmp-worst";
+    return "";
   }
 
   // Column HTML
